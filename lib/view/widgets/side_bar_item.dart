@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../core/constant/data.dart';
 import '../../core/constant/routes.dart';
+import '../../core/localization/change_local.dart';
 
 class SidebarItem extends StatefulWidget {
   final IconData icon;
@@ -53,8 +54,18 @@ class _SidebarItemState extends State<SidebarItem> {
                       case 1:
                         Get.toNamed(AppRoute.listTransport);
                         break;
-                      case 8:
+                      case 9:
                         AppData.logout(question: true);
+                        break;
+                      case 8:
+                        LocaleController contr = Get.find<LocaleController>();
+                        if (contr.language == const Locale('fr')) {
+                          contr.changeLang('en');
+                        } else if (contr.language == const Locale('en')) {
+                          contr.changeLang('ar');
+                        } else if (contr.language == const Locale('ar')) {
+                          contr.changeLang('fr');
+                        }
                         break;
                       default:
                     }

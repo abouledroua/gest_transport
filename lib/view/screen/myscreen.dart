@@ -5,32 +5,19 @@ import '../widgets/my_menu_bar.dart';
 import 'mywidget.dart';
 
 class MyScreen extends StatelessWidget {
-  const MyScreen({super.key, required this.child, required this.title});
+  const MyScreen({super.key, required this.child, required this.title, this.endDrawer});
   final String title;
   final Widget child;
+  final Widget? endDrawer;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      bool showSidebar = constraints.maxWidth > 1050; // Adjust threshold as needed
       AppSizes.setSizeScreen(context);
-
       return MyWidget(
-        // leading: showSidebar
-        //     ? null // No leading icon if sidebar is shown
-        //     : Builder(
-        //         builder: (context) => IconButton(
-        //           icon: const Icon(Icons.menu),
-        //           onPressed: () {
-        //             Scaffold.of(context).openDrawer();
-        //           },
-        //         ),
-        //       ),
-        drawer: showSidebar
-            ? null // No drawer if sidebar is shown
-            : Drawer(child: MyMenuBar()),
-        // title: title,
-        child: Row(children: [if (showSidebar) MyMenuBar(), child]),
+        endDrawer: endDrawer,
+        drawer: AppSizes.showSidebar ? null : Drawer(child: MyMenuBar()),
+        child: Row(children: [if (AppSizes.showSidebar) MyMenuBar(), child]),
       );
     },
   );

@@ -16,6 +16,8 @@ frTr() => {
   "bonsoir": "Bonsoir",
   "oui": "Oui",
   "non": "Non",
+  "langue": "Langue",
+  "Exercice": "Exercice",
   "login_title": "Connectez-vous à votre compte",
   "serveur": "Serveur",
   "username": "Nom d'Utilisateur",

@@ -19,7 +19,7 @@ class MyWidget extends StatelessWidget {
   final List<Widget>? actions;
   final String? backgroudImage;
   final Color? backgroundColor, appBarColor, leadingIconColor;
-  final Widget? drawer, leading;
+  final Widget? drawer, leading, endDrawer;
   Function(bool)? onDrawerChanged;
 
   MyWidget({
@@ -32,6 +32,7 @@ class MyWidget extends StatelessWidget {
     this.appBarColor,
     this.title,
     this.drawer,
+    this.endDrawer,
     this.limitWidth = false,
     this.leadingIconColor,
     this.actions,
@@ -129,6 +130,7 @@ class MyWidget extends StatelessWidget {
                       ),
                 floatingActionButton: floatingActionButton,
                 drawer: drawer,
+                endDrawer: endDrawer,
                 onDrawerChanged: onDrawerChanged,
                 resizeToAvoidBottomInset: true,
                 body: Container(

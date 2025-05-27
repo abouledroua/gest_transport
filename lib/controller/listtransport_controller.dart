@@ -17,6 +17,7 @@ class ListTransportsController extends GetxController {
       filter = false,
       sort = false,
       complete = false,
+      sortAscending = true,
       loadingExercice = false,
       errorExercice = false,
       loadingFilter = false,
@@ -24,11 +25,11 @@ class ListTransportsController extends GetxController {
       errorDestination = false;
   List<String> etatTab = [];
   String queryClient = "", queryTransporteurExterne = "";
-  String? dropExercice, dropEtat, dropDestination;
+  String? dropExercice, sortColumn, dropEtat, dropDestination;
   List<DropdownMenuItem> myDropEtatList = [], myDropDestinationList = [], myDropExerciceList = [];
   List<String> exDes = [], destinDes = [];
   int sortIndex = 0, selectIndex = -1;
-  late TextEditingController clientController, dateController, transpExterneController;
+  late TextEditingController clientController, dateController, dateAuController, transpExterneController;
   List<Transport> allTransports = [], transports = [];
   late MyData myData;
 
@@ -36,6 +37,66 @@ class ListTransportsController extends GetxController {
     value: label,
     child: Center(child: Text(label, textAlign: TextAlign.center)),
   );
+
+  sortBy(String column) {
+    if (sortColumn == column) {
+      sortAscending = !sortAscending;
+    } else {
+      sortColumn = column;
+      sortAscending = true;
+    }
+    transports.sort((a, b) {
+      int cmp;
+      switch (column) {
+        case 'N°':
+          cmp = a.idTransport.compareTo(b.idTransport);
+          break;
+        case 'Réf':
+          cmp = a.exercice.compareTo(b.exercice);
+          break;
+        case 'Date':
+          cmp = a.date.compareTo(b.date);
+          break;
+        case 'Heure':
+          cmp = a.heure.compareTo(b.heure);
+          break;
+        case 'Client':
+          cmp = a.nomClient.compareTo(b.nomClient);
+          break;
+        case 'Télephone':
+          cmp = a.tel1Client.compareTo(b.tel1Client);
+          break;
+        case 'Montant Produit':
+          cmp = a.montantProduit.compareTo(b.montantProduit);
+          break;
+        case 'Mnt Livr Interne':
+          cmp = a.montantLivrInterne.compareTo(b.montantLivrInterne);
+          break;
+        case 'Mnt Livr Externe':
+          cmp = a.montantLivrExterne.compareTo(b.montantLivrExterne);
+          break;
+        case 'Total':
+          cmp = a.total.compareTo(b.total);
+          break;
+        case 'Transp. Externe':
+          cmp = a.nomTransporteurExterne.compareTo(b.nomTransporteurExterne);
+          break;
+        case 'Etat':
+          cmp = a.etat.compareTo(b.etat);
+          break;
+        case 'Poste':
+          cmp = a.poste.compareTo(b.poste);
+          break;
+        case 'Destination':
+          cmp = a.destination.compareTo(b.destination);
+          break;
+        default:
+          cmp = 0;
+      }
+      return sortAscending ? cmp : -cmp;
+    });
+    update();
+  }
 
   updateDropExerciceValue(value) {
     dropExercice = value;
@@ -66,7 +127,7 @@ class ListTransportsController extends GetxController {
 
   initDropEtat() {
     etatTab.clear();
-    etatTab.add('Pas Livré Completement'.tr);
+    etatTab.add('Livré Partiellement'.tr);
     etatTab.add('Livré Completement'.tr);
     etatTab.add('En Cours'.tr);
     etatTab.add('Annulé'.tr);
@@ -74,12 +135,12 @@ class ListTransportsController extends GetxController {
 
     myDropEtatList.clear();
     myDropEtatList.add(myDropMenuItem('Tous'.tr));
-    myDropEtatList.add(myDropMenuItem('Pas Livré Completement'.tr));
+    myDropEtatList.add(myDropMenuItem('Livré Partiellement'.tr));
     myDropEtatList.add(myDropMenuItem('Livré Completement'.tr));
     myDropEtatList.add(myDropMenuItem('En Cours'.tr));
     myDropEtatList.add(myDropMenuItem('Annulé'.tr));
     myDropEtatList.add(myDropMenuItem('Archivé'.tr));
-    dropEtat = 'Pas Livré Completement'.tr;
+    dropEtat = 'Livré Partiellement'.tr;
   }
 
   initDropDestination() {
@@ -318,8 +379,13 @@ class ListTransportsController extends GetxController {
     if (dropDestination != "Tous Les Destination".tr) {
       pWhere += " AND IFNULL(CONCAT(D.VILLE_DEPART,' -> ',D.VILLE_ARRIVEE),'') = '$dropDestination'";
     }
-    if (dateController.text != "") {
-      pWhere += " AND E.DATE_TRANSPORT = '${dateController.text}'";
+    if (dateController.text.isNotEmpty || dateAuController.text.isNotEmpty) {
+      if (dateAuController.text.isNotEmpty && dateAuController.text.isNotEmpty) {
+        pWhere += " AND E.DATE_TRANSPORT BETWEEN '${dateController.text}' AND '${dateAuController.text}'";
+      } else {
+        pWhere +=
+            " AND E.DATE_TRANSPORT = '${dateController.text.isNotEmpty ? dateController.text : dateAuController.text}'";
+      }
     }
     if (dropEtat != 'Tous'.tr) {
       switch (etatTab.indexOf(dropEtat!)) {
@@ -351,7 +417,6 @@ class ListTransportsController extends GetxController {
       String pWhere = getWhere();
       bool repeat = true;
       int nbElt = 0, cp = 0;
-      debugPrint(" ---  start getList -------");
       while (repeat && loading) {
         repeat = false;
         cp++;
@@ -367,7 +432,6 @@ class ListTransportsController extends GetxController {
         limiEnd += limitPas;
         repeat = (nbElt != allTransports.length);
       }
-      debugPrint(" ---  end getList $cp -------");
 
       filtrer(filtering: false);
     }
@@ -422,6 +486,7 @@ class ListTransportsController extends GetxController {
     AppSizes.setSizeScreen(Get.context);
     clientController = TextEditingController();
     transpExterneController = TextEditingController();
+    dateAuController = TextEditingController();
     dateController = TextEditingController();
     queryClient = "";
     queryTransporteurExterne = "";
@@ -456,6 +521,7 @@ class ListTransportsController extends GetxController {
   void onClose() {
     clientController.dispose();
     transpExterneController.dispose();
+    dateAuController.dispose();
     dateController.dispose();
     super.onClose();
   }
@@ -495,9 +561,8 @@ class ListTransportsController extends GetxController {
     getList(showMessage: true);
   }
 
-  @override
-  void onReady() {
-    debugPrint("ListTransportsController onReady");
-    super.onReady();
+  updateDateAu(selectDate) {
+    dateAuController.text = selectDate;
+    getList(showMessage: true);
   }
 }

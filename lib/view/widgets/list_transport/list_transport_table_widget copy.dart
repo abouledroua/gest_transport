@@ -238,7 +238,7 @@ class ListTransportWidgetTable extends StatelessWidget {
     ),
     DataColumn(
       label: Text(
-        'Déstination'.tr,
+        'Destination'.tr,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
       ),
       onSort: (columnIndex, ascending) {

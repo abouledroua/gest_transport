@@ -6,6 +6,7 @@ import '../../core/constant/color.dart';
 import '../../core/constant/sizes.dart';
 import '../../core/mydivider.dart';
 import '../widgets/list_transport/emptylisttransport.dart';
+import '../widgets/list_transport/filter_drawer_widget.dart';
 import '../widgets/list_transport/list_transport_table_widget.dart';
 import '../widgets/loadingbarwidget.dart';
 import 'myscreen.dart';
@@ -21,12 +22,16 @@ class ListTransportPage extends StatelessWidget {
     Get.put(ListTransportsController());
     return MyScreen(
       title: "Transport".tr,
+      endDrawer: GetBuilder<ListTransportsController>(
+        builder: (controller) => FilterDrawerWidget(controller: controller, parentContext: context),
+      ),
       child: GetBuilder<ListTransportsController>(
         builder: (controller) => Expanded(
           child: Column(
             children: [
               const SizedBox(height: AppSizes.appPadding),
               actionButton(context, controller),
+              if (!controller.loading) filterChips(controller),
               if (!controller.loading && !controller.loadingFilter && controller.filter)
                 filterWidget(context, controller),
               if (controller.loading) const LoadingBarWidget(),
@@ -39,73 +44,174 @@ class ListTransportPage extends StatelessWidget {
     );
   }
 
-  actionButton(BuildContext context, controller) => Row(
-    children: [
-      Expanded(
-        child: Text('List_Transports'.tr, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+  filterChips(ListTransportsController controller) {
+    List<Widget> chips = [];
+
+    if (controller.dropExercice != "Tous".tr) {
+      chips.add(
+        Chip(
+          label: Text('${'Exercice'.tr}: ${controller.dropExercice}'),
+          onDeleted: () => controller.updateDropExerciceValue("Tous".tr),
+        ),
+      );
+    }
+    if (controller.clientController.text.isNotEmpty) {
+      chips.add(
+        Chip(
+          label: Text('${'Client'.tr}: ${controller.clientController.text}'),
+          onDeleted: () {
+            controller.clientController.clear();
+            controller.updateClientQuery('');
+          },
+        ),
+      );
+    }
+    if (controller.transpExterneController.text.isNotEmpty) {
+      chips.add(
+        Chip(
+          label: Text('${'Transporteur'.tr}: ${controller.transpExterneController.text}'),
+          onDeleted: () {
+            controller.transpExterneController.clear();
+            controller.updateTransporteurExterneQuery('');
+          },
+        ),
+      );
+    }
+    if (controller.dateController.text.isNotEmpty || controller.dateAuController.text.isNotEmpty) {
+      String date = '';
+      if (controller.dateController.text.isNotEmpty && controller.dateAuController.text.isNotEmpty) {
+        date = '${controller.dateController.text} -> ${controller.dateAuController.text}';
+      } else if (controller.dateController.text.isNotEmpty) {
+        date = controller.dateController.text;
+      } else if (controller.dateAuController.text.isNotEmpty) {
+        date = controller.dateAuController.text;
+      }
+      chips.add(
+        Chip(
+          label: Text('${'Date'.tr}: $date'),
+          onDeleted: () {
+            controller.dateController.clear();
+            controller.updateDate('');
+          },
+        ),
+      );
+    }
+    if (controller.dropDestination != "Tous Les Destination".tr) {
+      chips.add(
+        Chip(
+          label: Text('${'Destination'.tr}: ${controller.dropDestination}'),
+          onDeleted: () => controller.updateDropDestinationValue("Tous Les Destination".tr),
+        ),
+      );
+    }
+    if (controller.dropEtat != null && controller.dropEtat != 'Tous'.tr) {
+      chips.add(
+        Chip(
+          label: Text('${'Etat'.tr}: ${controller.dropEtat}'),
+          onDeleted: () => controller.updateDropEtatValue('Tous'.tr),
+        ),
+      );
+    }
+
+    if (chips.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Wrap(
+          alignment: WrapAlignment.start, // Align to the left
+          spacing: 8.0,
+          runSpacing: 4.0,
+          children: chips,
+        ),
       ),
-      if (controller.selectIndex > -1 && !controller.loading)
-        IconButton(
-          tooltip: "Imprimer".tr,
-          onPressed: () {
-            controller.getList(showMessage: true);
-          },
-          icon: const Icon(Icons.print_outlined, color: AppColor.purple),
-        ),
-      if (controller.selectIndex > -1 && !controller.loading) const MyDivider(),
-      if (controller.selectIndex > -1 && !controller.loading)
-        IconButton(
-          tooltip: "Supprimer".tr,
-          onPressed: () {
-            controller.getList(showMessage: true);
-          },
-          icon: Icon(Icons.delete_forever, color: AppColor.red),
-        ),
-      if (controller.selectIndex > -1 && !controller.loading)
-        IconButton(
-          tooltip: "Modifier".tr,
-          onPressed: () {
-            controller.getList(showMessage: true);
-          },
-          icon: const Icon(Icons.edit_document, color: AppColor.blue2),
-        ),
-      if (!controller.loading)
-        IconButton(
-          tooltip: "Ajouter".tr,
-          onPressed: () {
-            controller.getList(showMessage: true);
-          },
-          icon: const Icon(Icons.add_circle_outline_sharp, color: AppColor.green2),
-        ),
-      if (!controller.loading) const MyDivider(),
-      if (!controller.loading)
-        IconButton(
-          tooltip: "Imprimer la Liste".tr,
-          onPressed: () {
-            controller.getList(showMessage: true);
-          },
-          icon: const Icon(Icons.list_alt_outlined, color: AppColor.black),
-        ),
-      if (!controller.loading)
-        IconButton(
-          tooltip: "Actualiser".tr,
-          onPressed: () {
-            controller.getList(showMessage: true);
-          },
-          icon: const Icon(Icons.refresh),
-        ),
-      if (!controller.loading)
-        IconButton(
-          tooltip: controller.filter ? "Annuler Filtre".tr : "Filtrer".tr,
-          onPressed: () {
-            controller.updatefiltrer();
-          },
-          icon: Icon(
-            controller.filter ? Icons.filter_alt_off_rounded : Icons.filter_alt_rounded,
-            color: controller.filter ? AppColor.grey : AppColor.amber,
+    );
+  }
+
+  actionButton(BuildContext context, controller) => LayoutBuilder(
+    builder: (context, constraints) => Row(
+      children: [
+        if (!AppSizes.showSidebar)
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.filter_list, color: AppColor.black),
+              tooltip: "Filtrer".tr,
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
           ),
+        Expanded(
+          child: Text('List_Transports'.tr, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
         ),
-    ],
+        if (controller.selectIndex > -1 && !controller.loading)
+          IconButton(
+            tooltip: "Imprimer".tr,
+            onPressed: () {
+              controller.getList(showMessage: true);
+            },
+            icon: const Icon(Icons.print_outlined, color: AppColor.purple),
+          ),
+        if (controller.selectIndex > -1 && !controller.loading) const MyDivider(),
+        if (controller.selectIndex > -1 && !controller.loading)
+          IconButton(
+            tooltip: "Supprimer".tr,
+            onPressed: () {
+              controller.getList(showMessage: true);
+            },
+            icon: Icon(Icons.delete_forever, color: AppColor.red),
+          ),
+        if (controller.selectIndex > -1 && !controller.loading)
+          IconButton(
+            tooltip: "Modifier".tr,
+            onPressed: () {
+              controller.getList(showMessage: true);
+            },
+            icon: const Icon(Icons.edit_document, color: AppColor.blue2),
+          ),
+        if (!controller.loading)
+          IconButton(
+            tooltip: "Ajouter".tr,
+            onPressed: () {
+              controller.getList(showMessage: true);
+            },
+            icon: const Icon(Icons.add_circle_outline_sharp, color: AppColor.green2),
+          ),
+        if (!controller.loading) const MyDivider(),
+        if (!controller.loading)
+          IconButton(
+            tooltip: "Imprimer la Liste".tr,
+            onPressed: () {
+              controller.getList(showMessage: true);
+            },
+            icon: const Icon(Icons.list_alt_outlined, color: AppColor.black),
+          ),
+        if (!controller.loading)
+          IconButton(
+            tooltip: "Actualiser".tr,
+            onPressed: () {
+              controller.getList(showMessage: true);
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+        if (!controller.loading)
+          Builder(
+            builder: (context) {
+              return IconButton(
+                tooltip: controller.filter ? "Annuler Filtre".tr : "Filtrer".tr,
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+                icon: Icon(
+                  controller.filter ? Icons.filter_alt_off_rounded : Icons.filter_alt_rounded,
+                  color: controller.filter ? AppColor.grey : AppColor.amber,
+                ),
+              );
+            },
+          ),
+      ],
+    ),
   );
 
   filterWidget(BuildContext context, ListTransportsController controller) => Row(
@@ -199,7 +305,7 @@ class ListTransportPage extends StatelessWidget {
             onClear: () {
               controller.updateDropDestinationValue(null);
             },
-            hint: "Choisir la Déstination".tr,
+            hint: "Choisir la Destination".tr,
           ),
           child: const Center(child: CircularProgressIndicator.adaptive()),
         ),

@@ -11,31 +11,39 @@ class DrawerMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Drawer(
-          child: ListView(children: [
+    child: ListView(
+      children: [
         Container(
-            constraints: const BoxConstraints(maxHeight: 100),
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.appPadding),
-            child: Image.asset(AppImageAsset.logo)),
+          constraints: const BoxConstraints(maxHeight: 100),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.appPadding),
+          child: Image.asset(AppImageAsset.logo),
+        ),
         FittedBox(
-            child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppSizes.appPadding),
-                child: Text("app_title".tr, style: Theme.of(context).textTheme.titleMedium))),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSizes.appPadding),
+            child: Text("app_title".tr, style: Theme.of(context).textTheme.titleMedium),
+          ),
+        ),
         const SizedBox(height: AppSizes.appPadding),
-        const DrawerListTile(title: 'Acceuil', icon: Icons.home, myIndex: 0),
-        const DrawerListTile(title: 'Transport', icon: Icons.emoji_transportation, myIndex: 1),
-        const DrawerListTile(title: 'Livraison Produit', icon: Icons.production_quantity_limits, myIndex: 2),
-        const DrawerListTile(title: 'Livraison Argent', icon: Icons.currency_exchange_sharp, myIndex: 3),
+        DrawerListTile(title: "dashboard".tr, icon: Icons.home, myIndex: 0),
+        DrawerListTile(title: 'transport'.tr, icon: Icons.emoji_transportation, myIndex: 1),
+        DrawerListTile(title: 'livraison_produit'.tr, icon: Icons.production_quantity_limits, myIndex: 2),
+        DrawerListTile(title: 'livraison_argent'.tr, icon: Icons.currency_exchange_sharp, myIndex: 3),
         const Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSizes.appPadding * 2),
-            child: Divider(color: AppColor.grey, thickness: 0.2)),
-        const DrawerListTile(title: 'Clients', icon: Icons.person_2_outlined, myIndex: 4),
-        const DrawerListTile(title: 'Fournisseurs', icon: Icons.support_agent_outlined, myIndex: 5),
-        const DrawerListTile(title: 'Transporteurs', icon: Icons.directions_car_filled_sharp, myIndex: 6),
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.appPadding * 2),
+          child: Divider(color: AppColor.grey, thickness: 0.2),
+        ),
+        DrawerListTile(title: 'clients_fournisseurs'.tr, icon: Icons.person_2_outlined, myIndex: 4),
+        DrawerListTile(title: 'transporteurs'.tr, icon: Icons.support_agent_outlined, myIndex: 5),
         const Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSizes.appPadding * 2),
-            child: Divider(color: AppColor.grey, thickness: 0.2)),
-        const DrawerListTile(title: 'Caisse', icon: Icons.attach_money_outlined, myIndex: 7),
-        const DrawerListTile(title: 'Paramêtres', icon: Icons.settings, myIndex: 8),
-        DrawerListTile(title: 'Logout', icon: Icons.logout, color: AppColor.red, myIndex: 9)
-      ]));
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.appPadding * 2),
+          child: Divider(color: AppColor.grey, thickness: 0.2),
+        ),
+        DrawerListTile(title: 'caisse'.tr, icon: Icons.attach_money_outlined, myIndex: 6),
+        DrawerListTile(title: 'parametres'.tr, icon: Icons.settings, myIndex: 7),
+        DrawerListTile(title: 'langue'.tr, icon: Icons.settings, myIndex: 8),
+        DrawerListTile(title: 'logout'.tr, icon: Icons.logout, color: AppColor.red, myIndex: 9),
+      ],
+    ),
+  );
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gestion_transport/core/class/transport.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
 import '../../../controller/listtransport_controller.dart';
+import '../../../core/class/transport.dart';
 import '../../../core/constant/color.dart';
 import '../../../core/constant/data.dart';
 
@@ -22,7 +22,7 @@ class ListTransportWidgetTable extends StatelessWidget {
           autofocus: true,
           onKeyEvent: (FocusNode node, KeyEvent event) => keyboardListener(event, controller, rows, verticalController),
           child: HorizontalDataTable(
-            leftHandSideColumnWidth: 50,
+            leftHandSideColumnWidth: 70,
             rightHandSideColumnWidth: (controller.dropEtat == 'Tous'.tr) ? 1530 : 1430,
             isFixedHeader: true,
             headerWidgets: _getTitleWidget(context, controller),
@@ -36,7 +36,7 @@ class ListTransportWidgetTable extends StatelessWidget {
                     : Colors.transparent, // Highlight selected row
                 child: _cellText(
                   (index + 1).toString(),
-                  60,
+                  70,
                   _getRowStyle(context, index, controller),
                   index,
                   controller,
@@ -207,22 +207,40 @@ class ListTransportWidgetTable extends StatelessWidget {
 
   List<Widget> _getTitleWidget(BuildContext context, ListTransportsController controller) {
     final style = Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold);
-    return [
-      _headerText('N°'.tr, 50, style),
-      _headerText('Réf'.tr, 110, style),
-      _headerText('Date'.tr, 105, style),
-      _headerText('Heure'.tr, 80, style),
-      _headerText('Client'.tr, 150, style),
-      _headerText('Télephone'.tr, 120, style),
-      _headerText('Montant Produit'.tr, 120, style),
-      _headerText('Mnt Livr Interne'.tr, 120, style),
-      _headerText('Mnt Livr Externe'.tr, 120, style),
-      _headerText('Total'.tr, 100, style),
-      _headerText('Transp. Externe'.tr, 120, style),
-      if (controller.dropEtat == 'Tous'.tr) _headerText('Etat'.tr, 100, style),
-      _headerText('Poste'.tr, 100, style),
-      _headerText('Déstination'.tr, 180, style),
+    final columns = [
+      {'label': 'N°'.tr, 'width': 45.0},
+      {'label': 'Réf'.tr, 'width': 110.0},
+      {'label': 'Date'.tr, 'width': 105.0},
+      {'label': 'Heure'.tr, 'width': 80.0},
+      {'label': 'Client'.tr, 'width': 150.0},
+      {'label': 'Télephone'.tr, 'width': 120.0},
+      {'label': 'Montant Produit'.tr, 'width': 120.0},
+      {'label': 'Mnt Livr Interne'.tr, 'width': 120.0},
+      {'label': 'Mnt Livr Externe'.tr, 'width': 120.0},
+      {'label': 'Total'.tr, 'width': 100.0},
+      {'label': 'Transp. Externe'.tr, 'width': 120.0},
+      if (controller.dropEtat == 'Tous'.tr) {'label': 'Etat'.tr, 'width': 100.0},
+      {'label': 'Poste'.tr, 'width': 100.0},
+      {'label': 'Destination'.tr, 'width': 180.0},
     ];
+
+    return columns.map((col) {
+      return InkWell(
+        onTap: () => controller.sortBy(col['label'] as String),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _headerText(
+              col['label'] as String,
+              col['width'] as double,
+              style.copyWith(color: controller.sortColumn == col['label'] ? Colors.blue : null),
+            ),
+            if (controller.sortColumn == col['label'])
+              Icon(controller.sortAscending ? Icons.arrow_upward : Icons.arrow_downward, size: 16, color: Colors.blue),
+          ],
+        ),
+      );
+    }).toList();
   }
 
   Widget _headerText(String label, double width, TextStyle style) => Container(
@@ -237,6 +255,22 @@ class ListTransportWidgetTable extends StatelessWidget {
     final item = controller.transports[index];
     final styleText = _getRowStyle(context, index, controller);
     final bool isSelected = index == controller.selectIndex;
+
+    Color rowColor;
+    switch (item.etat) {
+      case 4:
+        rowColor = AppColor.green.withValues(alpha: 0.25);
+        break;
+      case 3:
+        rowColor = AppColor.red.withValues(alpha: 0.25);
+        break;
+      case 5:
+        rowColor = AppColor.orange.withValues(alpha: 0.25);
+        break;
+      default:
+        rowColor = Colors.white;
+    }
+
     List<Widget> cells = [
       _cellText("${item.exercice}/${item.idTransport}", 110, styleText, index, controller),
       _cellText(item.date, 105, styleText, index, controller),
@@ -281,7 +315,7 @@ class ListTransportWidgetTable extends StatelessWidget {
         controller.selectRow(index);
       },
       child: Container(
-        color: isSelected ? AppColor.yellow.withValues(alpha: 0.3) : Colors.transparent, // Highlight selected row
+        color: rowColor,
         child: Row(children: cells),
       ),
     );

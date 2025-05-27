@@ -16,6 +16,8 @@ enTr() => {
   "bonsoir": "Good Afternoon",
   "oui": "Yes",
   "non": "No",
+  "langue": "Language",
+  "Exercice": "Year",
   "Choisir l'Etat": "Choose State",
   "login_title": "Log in to your account",
   "serveur": "Server",
