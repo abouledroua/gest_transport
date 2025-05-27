@@ -1,0 +1,81 @@
+name: gestion_transport
+description: "Application de Gestion de Transport de Marchandise"
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  awesome_dialog: any
+  flutter_svg: any
+  blinking_text: any
+  device_info_plus: any
+  horizontal_data_table: any
+  awesome_notifications_fcm: any
+  awesome_notifications_core: any
+  universal_platform: any
+  awesome_notifications: any
+  syncfusion_flutter_pdf: any
+  syncfusion_flutter_pdfviewer: any
+  flutter_expanded_tile: any
+  flutter_secure_storage: any
+  fl_chart: any
+  get: any
+  google_fonts: any
+  http: any
+  progress_indicators: any
+  icon_animated: any
+  intl: any
+  app_settings: any
+  image_picker: any
+  group_button: any
+  liquid_pull_to_refresh: any
+  number_system: any
+  package_info_plus: any
+  path_provider: any
+  rename: any
+  shared_preferences: any
+  permission_handler: any
+  url_launcher: any
+  mobile_device_identifier: any
+  printing: any
+  pdf: any
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: any
+  flutter_lints: any
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/images/logo.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/images/logo.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/images/logo.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+flutter_intl:
+  enabled: true
