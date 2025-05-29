@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -12,16 +13,16 @@ import '../core/constant/sizes.dart';
 import '../core/services/httprequest.dart';
 
 class ListTransportsController extends GetxController {
-  bool loading = false,
-      error = false,
-      filter = false,
+  RxBool loading = false.obs,
+      loadingFilter = false.obs,
+      filter = false.obs,
+      loadingDestination = false.obs,
+      loadingExercice = false.obs;
+  bool error = false,
       sort = false,
       complete = false,
       sortAscending = true,
-      loadingExercice = false,
       errorExercice = false,
-      loadingFilter = false,
-      loadingDestination = false,
       errorDestination = false;
   List<String> etatTab = [];
   String queryClient = "", queryTransporteurExterne = "";
@@ -39,6 +40,21 @@ class ListTransportsController extends GetxController {
   );
 
   sortBy(String column) {
+    final nCol = 'N°'.tr;
+    final refCol = 'Réf'.tr;
+    final dateCol = 'Date'.tr;
+    final heureCol = 'Heure'.tr;
+    final clientCol = 'Client'.tr;
+    final telCol = 'Télephone'.tr;
+    final montantProduitCol = 'Montant Produit'.tr;
+    final mntLivrInterneCol = 'Mnt Livr Interne'.tr;
+    final mntLivrExterneCol = 'Mnt Livr Externe'.tr;
+    final totalCol = 'Total'.tr;
+    final transpExterneCol = 'Transp. Externe'.tr;
+    final etatCol = 'Etat'.tr;
+    final posteCol = 'Poste'.tr;
+    final destinationCol = 'Destination'.tr;
+
     if (sortColumn == column) {
       sortAscending = !sortAscending;
     } else {
@@ -46,52 +62,35 @@ class ListTransportsController extends GetxController {
       sortAscending = true;
     }
     transports.sort((a, b) {
-      int cmp;
-      switch (column) {
-        case 'N°':
-          cmp = a.idTransport.compareTo(b.idTransport);
-          break;
-        case 'Réf':
-          cmp = a.exercice.compareTo(b.exercice);
-          break;
-        case 'Date':
-          cmp = a.date.compareTo(b.date);
-          break;
-        case 'Heure':
-          cmp = a.heure.compareTo(b.heure);
-          break;
-        case 'Client':
-          cmp = a.nomClient.compareTo(b.nomClient);
-          break;
-        case 'Télephone':
-          cmp = a.tel1Client.compareTo(b.tel1Client);
-          break;
-        case 'Montant Produit':
-          cmp = a.montantProduit.compareTo(b.montantProduit);
-          break;
-        case 'Mnt Livr Interne':
-          cmp = a.montantLivrInterne.compareTo(b.montantLivrInterne);
-          break;
-        case 'Mnt Livr Externe':
-          cmp = a.montantLivrExterne.compareTo(b.montantLivrExterne);
-          break;
-        case 'Total':
-          cmp = a.total.compareTo(b.total);
-          break;
-        case 'Transp. Externe':
-          cmp = a.nomTransporteurExterne.compareTo(b.nomTransporteurExterne);
-          break;
-        case 'Etat':
-          cmp = a.etat.compareTo(b.etat);
-          break;
-        case 'Poste':
-          cmp = a.poste.compareTo(b.poste);
-          break;
-        case 'Destination':
-          cmp = a.destination.compareTo(b.destination);
-          break;
-        default:
-          cmp = 0;
+      int cmp = 0;
+      if (column == nCol) {
+        cmp = a.num.compareTo(b.num);
+      } else if (column == refCol) {
+        cmp = a.exercice.compareTo(b.exercice);
+      } else if (column == dateCol) {
+        cmp = a.date.compareTo(b.date);
+      } else if (column == heureCol) {
+        cmp = a.heure.compareTo(b.heure);
+      } else if (column == clientCol) {
+        cmp = a.nomClient.compareTo(b.nomClient);
+      } else if (column == telCol) {
+        cmp = a.tel1Client.compareTo(b.tel1Client);
+      } else if (column == montantProduitCol) {
+        cmp = a.montantProduit.compareTo(b.montantProduit);
+      } else if (column == mntLivrInterneCol) {
+        cmp = a.montantLivrInterne.compareTo(b.montantLivrInterne);
+      } else if (column == mntLivrExterneCol) {
+        cmp = a.montantLivrExterne.compareTo(b.montantLivrExterne);
+      } else if (column == totalCol) {
+        cmp = a.total.compareTo(b.total);
+      } else if (column == transpExterneCol) {
+        cmp = a.nomTransporteurExterne.compareTo(b.nomTransporteurExterne);
+      } else if (column == etatCol) {
+        cmp = a.etat.compareTo(b.etat);
+      } else if (column == posteCol) {
+        cmp = a.poste.compareTo(b.poste);
+      } else if (column == destinationCol) {
+        cmp = a.destination.compareTo(b.destination);
       }
       return sortAscending ? cmp : -cmp;
     });
@@ -155,6 +154,9 @@ class ListTransportsController extends GetxController {
   initDate() {
     var now = DateTime.now();
     dateController.text = "${now.year}-${now.month}-${now.day}";
+    if (kDebugMode) {
+      dateController.text = "2025-05-28";
+    }
   }
 
   onSortColumn(int columnIndex, bool ascending) {
@@ -226,20 +228,20 @@ class ListTransportsController extends GetxController {
   updateBooleans({required newloading, required newerror, required type}) {
     switch (type) {
       case 0:
-        loading = newloading;
+        loading.value = newloading;
         error = newerror;
         break;
       case 1:
-        loadingExercice = newloading;
+        loadingExercice.value = newloading;
         errorExercice = newerror;
         break;
       case 2:
-        loadingDestination = newloading;
+        loadingDestination.value = newloading;
         errorDestination = newerror;
         break;
       default:
     }
-    loadingFilter = loadingExercice || loadingDestination;
+    loadingFilter.value = loadingExercice.value || loadingDestination.value;
     update();
   }
 
@@ -254,7 +256,7 @@ class ListTransportsController extends GetxController {
   }
 
   Future getDropExercice({required bool showMessage}) async {
-    if (!loadingExercice) {
+    if (!loadingExercice.value) {
       try {
         updateBooleans(newloading: true, newerror: false, type: 1);
         final (response, success) = await httpRequest(
@@ -291,7 +293,7 @@ class ListTransportsController extends GetxController {
   }
 
   Future getDropDestination({required bool showMessage}) async {
-    if (!loadingDestination) {
+    if (!loadingDestination.value) {
       try {
         updateBooleans(newloading: true, newerror: false, type: 2);
         final (response, success) = await httpRequest(ftpFile: 'GET_DROP_DESTINATIONS.php');
@@ -347,6 +349,7 @@ class ListTransportsController extends GetxController {
 
         for (var m in responsebody) {
           final e = Transport.fromJson(m);
+          e.num = allTransports.length + 1;
           allTransports.add(e);
         }
         complete = true;
@@ -411,13 +414,13 @@ class ListTransportsController extends GetxController {
   }
 
   Future getList({required bool showMessage}) async {
-    if (!loading) {
+    if (!loading.value) {
       updateBooleans(newloading: true, newerror: false, type: 0);
       int limitStart = 0, limitPas = 50, limiEnd = limitPas;
       String pWhere = getWhere();
       bool repeat = true;
       int nbElt = 0, cp = 0;
-      while (repeat && loading) {
+      while (repeat && loading.value) {
         repeat = false;
         cp++;
         if (cp != 1) {
@@ -513,7 +516,7 @@ class ListTransportsController extends GetxController {
   }
 
   updatefiltrer() {
-    filter = !filter;
+    filter.value = !filter.value;
     update();
   }
 

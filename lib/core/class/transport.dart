@@ -1,7 +1,7 @@
 import '../constant/data.dart';
 
 class Transport {
-  int idTransport, etat, exercice, idClient, idTransporteurExterne;
+  int idTransport, etat, exercice, idClient, idTransporteurExterne, num = 0;
   String date, heure, nomClient, tel1Client, tel2Client, nomTransporteurExterne, poste, username, destination;
   double montantProduit, montantLivrInterne, montantLivrExterne, total;
 

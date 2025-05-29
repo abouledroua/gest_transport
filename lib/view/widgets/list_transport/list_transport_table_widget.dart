@@ -31,11 +31,19 @@ class ListTransportWidgetTable extends StatelessWidget {
                 controller.selectRow(index);
               },
               child: Container(
-                color: index == controller.selectIndex
-                    ? AppColor.yellow.withValues(alpha: 0.3)
-                    : Colors.transparent, // Highlight selected row
+                decoration: BoxDecoration(
+                  color: getColorRow(controller.transports[index]),
+                  border: index == controller.selectIndex
+                      ? const Border(
+                          top: BorderSide(color: Colors.red, width: 2),
+                          right: BorderSide.none,
+                          bottom: BorderSide(color: Colors.red, width: 2),
+                          left: BorderSide(color: Colors.red, width: 2),
+                        )
+                      : null,
+                ),
                 child: _cellText(
-                  (index + 1).toString(),
+                  controller.transports[index].num.toString(),
                   70,
                   _getRowStyle(context, index, controller),
                   index,
@@ -55,6 +63,19 @@ class ListTransportWidgetTable extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  getColorRow(item) {
+    switch (item.etat) {
+      case 4:
+        return AppColor.green.withValues(alpha: 0.25);
+      case 3:
+        return AppColor.red.withValues(alpha: 0.25);
+      case 5:
+        return AppColor.orange.withValues(alpha: 0.25);
+      default:
+        return Colors.white;
+    }
   }
 
   KeyEventResult keyboardListener(
@@ -254,22 +275,6 @@ class ListTransportWidgetTable extends StatelessWidget {
   Widget _generateAllColumns(ListTransportsController controller, int index, BuildContext context) {
     final item = controller.transports[index];
     final styleText = _getRowStyle(context, index, controller);
-    final bool isSelected = index == controller.selectIndex;
-
-    Color rowColor;
-    switch (item.etat) {
-      case 4:
-        rowColor = AppColor.green.withValues(alpha: 0.25);
-        break;
-      case 3:
-        rowColor = AppColor.red.withValues(alpha: 0.25);
-        break;
-      case 5:
-        rowColor = AppColor.orange.withValues(alpha: 0.25);
-        break;
-      default:
-        rowColor = Colors.white;
-    }
 
     List<Widget> cells = [
       _cellText("${item.exercice}/${item.idTransport}", 110, styleText, index, controller),
@@ -315,7 +320,17 @@ class ListTransportWidgetTable extends StatelessWidget {
         controller.selectRow(index);
       },
       child: Container(
-        color: rowColor,
+        decoration: BoxDecoration(
+          color: getColorRow(item),
+          border: index == controller.selectIndex
+              ? const Border(
+                  top: BorderSide(color: Colors.red, width: 2),
+                  right: BorderSide(color: Colors.red, width: 2),
+                  bottom: BorderSide(color: Colors.red, width: 2),
+                  left: BorderSide.none,
+                )
+              : null,
+        ),
         child: Row(children: cells),
       ),
     );

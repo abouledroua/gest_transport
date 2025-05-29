@@ -35,7 +35,7 @@ class FilterDrawerWidget extends StatelessWidget {
                     SizedBox(
                       width: 80,
                       child: Visibility(
-                        visible: controller.loadingExercice,
+                        visible: controller.loadingExercice.value,
                         replacement: myDropDown(
                           label: 'Exercice'.tr,
                           value: controller.dropExercice,
@@ -160,7 +160,7 @@ class FilterDrawerWidget extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: Visibility(
-                        visible: controller.loadingExercice,
+                        visible: controller.loadingExercice.value,
                         replacement: myDropDown(
                           label: 'Destination'.tr,
                           value: controller.dropDestination,

@@ -25,19 +25,21 @@ class ListTransportPage extends StatelessWidget {
       endDrawer: GetBuilder<ListTransportsController>(
         builder: (controller) => FilterDrawerWidget(controller: controller, parentContext: context),
       ),
-      child: GetBuilder<ListTransportsController>(
-        builder: (controller) => Expanded(
-          child: Column(
-            children: [
-              const SizedBox(height: AppSizes.appPadding),
-              actionButton(context, controller),
-              if (!controller.loading) filterChips(controller),
-              if (!controller.loading && !controller.loadingFilter && controller.filter)
-                filterWidget(context, controller),
-              if (controller.loading) const LoadingBarWidget(),
-              if (!controller.loading && controller.transports.isEmpty) const EmptyListTransports(),
-              if (!controller.loading && controller.transports.isNotEmpty) const ListTransportWidgetTable(),
-            ],
+      child: Expanded(
+        child: GetBuilder<ListTransportsController>(
+          builder: (controller) => Obx(
+            () => Column(
+              children: [
+                const SizedBox(height: AppSizes.appPadding),
+                actionButton(context, controller),
+                if (!controller.loading.value) filterChips(controller),
+                if (!controller.loading.value && !controller.loadingFilter.value && controller.filter.value)
+                  filterWidget(context, controller),
+                if (controller.loading.value) const LoadingBarWidget(),
+                if (!controller.loading.value && controller.transports.isEmpty) const EmptyListTransports(),
+                if (!controller.loading.value && controller.transports.isNotEmpty) const ListTransportWidgetTable(),
+              ],
+            ),
           ),
         ),
       ),
@@ -145,7 +147,7 @@ class ListTransportPage extends StatelessWidget {
         Expanded(
           child: Text('List_Transports'.tr, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
         ),
-        if (controller.selectIndex > -1 && !controller.loading)
+        if (controller.selectIndex > -1 && !controller.loading.value)
           IconButton(
             tooltip: "Imprimer".tr,
             onPressed: () {
@@ -153,8 +155,8 @@ class ListTransportPage extends StatelessWidget {
             },
             icon: const Icon(Icons.print_outlined, color: AppColor.purple),
           ),
-        if (controller.selectIndex > -1 && !controller.loading) const MyDivider(),
-        if (controller.selectIndex > -1 && !controller.loading)
+        if (controller.selectIndex > -1 && !controller.loading.value) const MyDivider(),
+        if (controller.selectIndex > -1 && !controller.loading.value)
           IconButton(
             tooltip: "Supprimer".tr,
             onPressed: () {
@@ -162,7 +164,7 @@ class ListTransportPage extends StatelessWidget {
             },
             icon: Icon(Icons.delete_forever, color: AppColor.red),
           ),
-        if (controller.selectIndex > -1 && !controller.loading)
+        if (controller.selectIndex > -1 && !controller.loading.value)
           IconButton(
             tooltip: "Modifier".tr,
             onPressed: () {
@@ -170,7 +172,7 @@ class ListTransportPage extends StatelessWidget {
             },
             icon: const Icon(Icons.edit_document, color: AppColor.blue2),
           ),
-        if (!controller.loading)
+        if (!controller.loading.value)
           IconButton(
             tooltip: "Ajouter".tr,
             onPressed: () {
@@ -178,8 +180,8 @@ class ListTransportPage extends StatelessWidget {
             },
             icon: const Icon(Icons.add_circle_outline_sharp, color: AppColor.green2),
           ),
-        if (!controller.loading) const MyDivider(),
-        if (!controller.loading)
+        if (!controller.loading.value) const MyDivider(),
+        if (!controller.loading.value)
           IconButton(
             tooltip: "Imprimer la Liste".tr,
             onPressed: () {
@@ -187,7 +189,7 @@ class ListTransportPage extends StatelessWidget {
             },
             icon: const Icon(Icons.list_alt_outlined, color: AppColor.black),
           ),
-        if (!controller.loading)
+        if (!controller.loading.value)
           IconButton(
             tooltip: "Actualiser".tr,
             onPressed: () {
@@ -195,17 +197,17 @@ class ListTransportPage extends StatelessWidget {
             },
             icon: const Icon(Icons.refresh),
           ),
-        if (!controller.loading)
+        if (!controller.loading.value)
           Builder(
             builder: (context) {
               return IconButton(
-                tooltip: controller.filter ? "Annuler Filtre".tr : "Filtrer".tr,
+                tooltip: controller.filter.value ? "Annuler Filtre".tr : "Filtrer".tr,
                 onPressed: () {
                   Scaffold.of(context).openEndDrawer();
                 },
                 icon: Icon(
-                  controller.filter ? Icons.filter_alt_off_rounded : Icons.filter_alt_rounded,
-                  color: controller.filter ? AppColor.grey : AppColor.amber,
+                  controller.filter.value ? Icons.filter_alt_off_rounded : Icons.filter_alt_rounded,
+                  color: controller.filter.value ? AppColor.grey : AppColor.amber,
                 ),
               );
             },
@@ -221,7 +223,7 @@ class ListTransportPage extends StatelessWidget {
       SizedBox(
         width: 80,
         child: Visibility(
-          visible: controller.loadingExercice,
+          visible: controller.loadingExercice.value,
           replacement: myDropDown(
             label: 'Exercice'.tr,
             value: controller.dropExercice,
@@ -294,7 +296,7 @@ class ListTransportPage extends StatelessWidget {
       Expanded(
         flex: 2,
         child: Visibility(
-          visible: controller.loadingExercice,
+          visible: controller.loadingExercice.value,
           replacement: myDropDown(
             label: 'Destination'.tr,
             value: controller.dropDestination,
