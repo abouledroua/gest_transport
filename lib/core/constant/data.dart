@@ -602,40 +602,6 @@ class AppData {
     return true;
   }
 
-  // static _drawerButton({
-  //   required String text,
-  //   required String image,
-  //   Color? textColor,
-  //   required BuildContext context,
-  //   required onTap,
-  // }) => InkWell(
-  //   onTap: onTap,
-  //   child: Ink(
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(4),
-  //       child: Row(
-  //         // mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           SizedBox(height: AppSizes.heightScreen / 50, child: Image.asset(image)),
-  //           const SizedBox(width: 10),
-  //           Text(
-  //             text,
-  //             style: Theme.of(
-  //               context,
-  //             ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.normal, color: textColor ?? AppColor.black),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   ),
-  // );
-
-  // static _labelDrawer({required String text, required BuildContext context}) => Container(
-  //   width: double.infinity,
-  //   color: Colors.grey.shade300,
-  //   child: Center(child: Text(text, style: Theme.of(context).textTheme.headlineMedium)),
-  // );
-
   static openPlayStorePgae() {}
 
   static launchSocial(String url, String fallbackUrl) async {

@@ -218,7 +218,7 @@ class ListTransportWidgetTable extends StatelessWidget {
       label: Container(
         constraints: const BoxConstraints(maxWidth: 120), // Adjust width as needed
         child: Text(
-          'Transp. Externe'.tr,
+          'Transporteur Externe'.tr,
           style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           softWrap: true,
           overflow: TextOverflow.visible,

@@ -147,6 +147,7 @@ class ListTransportPage extends StatelessWidget {
         Expanded(
           child: Text('List_Transports'.tr, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
         ),
+
         if (controller.selectIndex > -1 && !controller.loading.value)
           IconButton(
             tooltip: "Imprimer".tr,
@@ -156,6 +157,14 @@ class ListTransportPage extends StatelessWidget {
             icon: const Icon(Icons.print_outlined, color: AppColor.purple),
           ),
         if (controller.selectIndex > -1 && !controller.loading.value) const MyDivider(),
+        if (controller.selectIndex > -1 && !controller.loading.value)
+          IconButton(
+            tooltip: "Archiver".tr,
+            onPressed: () {
+              controller.getList(showMessage: true);
+            },
+            icon: const Icon(Icons.archive_outlined, color: AppColor.brown),
+          ),
         if (controller.selectIndex > -1 && !controller.loading.value)
           IconButton(
             tooltip: "Supprimer".tr,

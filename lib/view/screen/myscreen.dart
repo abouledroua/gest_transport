@@ -17,7 +17,12 @@ class MyScreen extends StatelessWidget {
       return MyWidget(
         endDrawer: endDrawer,
         drawer: AppSizes.showSidebar ? null : Drawer(child: MyMenuBar()),
-        child: Row(children: [if (AppSizes.showSidebar) MyMenuBar(), child]),
+        child: Row(
+          children: [
+            // if (AppSizes.showSidebar) MyMenuBar(),
+            child,
+          ],
+        ),
       );
     },
   );

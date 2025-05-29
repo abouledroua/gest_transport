@@ -1,29 +1,34 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
+import 'package:intl/intl.dart';
 
 import '../../../controller/listtransport_controller.dart';
 import '../../../core/class/transport.dart';
 import '../../../core/constant/color.dart';
 import '../../../core/constant/data.dart';
+import '../../../core/constant/sizes.dart';
+import '../../../core/localization/change_local.dart';
+import 'details_tanle_widget.dart';
 
 class ListTransportWidgetTable extends StatelessWidget {
   const ListTransportWidgetTable({super.key});
 
   @override
   Widget build(BuildContext context) {
-    ListTransportsController controller = Get.find<ListTransportsController>();
-    final rows = controller.transports;
     ScrollController? verticalController;
     return GetBuilder<ListTransportsController>(
       builder: (controller) => Expanded(
         child: Focus(
           autofocus: true,
-          onKeyEvent: (FocusNode node, KeyEvent event) => keyboardListener(event, controller, rows, verticalController),
+          onKeyEvent: (FocusNode node, KeyEvent event) =>
+              keyboardListener(event, controller, controller.transports, verticalController),
           child: HorizontalDataTable(
-            leftHandSideColumnWidth: 70,
-            rightHandSideColumnWidth: (controller.dropEtat == 'Tous'.tr) ? 1530 : 1430,
+            leftHandSideColumnWidth: 55,
+            rightHandSideColumnWidth: (controller.dropEtat == 'Tous'.tr) ? 1555 : 1455,
             isFixedHeader: true,
             headerWidgets: _getTitleWidget(context, controller),
             leftSideItemBuilder: (context, index) => GestureDetector(
@@ -44,7 +49,7 @@ class ListTransportWidgetTable extends StatelessWidget {
                 ),
                 child: _cellText(
                   controller.transports[index].num.toString(),
-                  70,
+                  55,
                   _getRowStyle(context, index, controller),
                   index,
                   controller,
@@ -52,7 +57,7 @@ class ListTransportWidgetTable extends StatelessWidget {
               ),
             ),
             rightSideItemBuilder: (context, index) => _generateAllColumns(controller, index, context),
-            itemCount: rows.length,
+            itemCount: controller.transports.length,
             rowSeparatorWidget: const Divider(height: 1, color: Colors.grey),
             leftHandSideColBackgroundColor: Colors.white,
             rightHandSideColBackgroundColor: Colors.white,
@@ -229,36 +234,30 @@ class ListTransportWidgetTable extends StatelessWidget {
   List<Widget> _getTitleWidget(BuildContext context, ListTransportsController controller) {
     final style = Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold);
     final columns = [
-      {'label': 'N°'.tr, 'width': 45.0},
-      {'label': 'Réf'.tr, 'width': 110.0},
+      {'label': 'N°'.tr, 'width': 55.0},
+      {'label': 'Réf'.tr, 'width': 105.0},
+      {'label': 'Jour'.tr, 'width': 100.0},
       {'label': 'Date'.tr, 'width': 105.0},
-      {'label': 'Heure'.tr, 'width': 80.0},
+      {'label': 'Heure'.tr, 'width': 70.0},
       {'label': 'Client'.tr, 'width': 150.0},
       {'label': 'Télephone'.tr, 'width': 120.0},
-      {'label': 'Montant Produit'.tr, 'width': 120.0},
-      {'label': 'Mnt Livr Interne'.tr, 'width': 120.0},
-      {'label': 'Mnt Livr Externe'.tr, 'width': 120.0},
+      {'label': 'Montant Produit'.tr, 'width': 100.0},
+      {'label': 'Mnt Livr Interne'.tr, 'width': 100.0},
+      {'label': 'Mnt Livr Externe'.tr, 'width': 100.0},
       {'label': 'Total'.tr, 'width': 100.0},
-      {'label': 'Transp. Externe'.tr, 'width': 120.0},
+      {'label': 'Transporteur Externe'.tr, 'width': 120.0},
       if (controller.dropEtat == 'Tous'.tr) {'label': 'Etat'.tr, 'width': 100.0},
-      {'label': 'Poste'.tr, 'width': 100.0},
       {'label': 'Destination'.tr, 'width': 180.0},
+      {'label': 'Poste'.tr, 'width': 100.0},
     ];
 
     return columns.map((col) {
       return InkWell(
         onTap: () => controller.sortBy(col['label'] as String),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _headerText(
-              col['label'] as String,
-              col['width'] as double,
-              style.copyWith(color: controller.sortColumn == col['label'] ? Colors.blue : null),
-            ),
-            if (controller.sortColumn == col['label'])
-              Icon(controller.sortAscending ? Icons.arrow_upward : Icons.arrow_downward, size: 16, color: Colors.blue),
-          ],
+        child: _headerText(
+          col['label'] as String,
+          col['width'] as double,
+          style.copyWith(color: controller.sortColumn == col['label'] ? Colors.blue : null),
         ),
       );
     }).toList();
@@ -266,8 +265,7 @@ class ListTransportWidgetTable extends StatelessWidget {
 
   Widget _headerText(String label, double width, TextStyle style) => Container(
     width: width,
-    height: 70,
-    padding: const EdgeInsets.all(8),
+    height: 65,
     alignment: Alignment.center,
     child: Text(label, style: style, softWrap: true, textAlign: TextAlign.center),
   );
@@ -275,11 +273,19 @@ class ListTransportWidgetTable extends StatelessWidget {
   Widget _generateAllColumns(ListTransportsController controller, int index, BuildContext context) {
     final item = controller.transports[index];
     final styleText = _getRowStyle(context, index, controller);
+    final date = DateTime.parse(item.date);
+    LocaleController contr = Get.find<LocaleController>();
+    Locale locale = contr.language ?? const Locale('en');
+    String dayName = DateFormat.EEEE(locale.languageCode).format(date);
+    if (dayName.isNotEmpty) {
+      dayName = dayName[0].toUpperCase() + dayName.substring(1);
+    }
 
     List<Widget> cells = [
-      _cellText("${item.exercice}/${item.idTransport}", 110, styleText, index, controller),
+      _cellText("${item.exercice}/${item.idTransport}", 105, styleText, index, controller),
+      _cellText(dayName, 100, styleText, index, controller),
       _cellText(item.date, 105, styleText, index, controller),
-      _cellText(item.heure, 80, styleText, index, controller),
+      _cellText(item.heure.length >= 5 ? item.heure.substring(0, 5) : item.heure, 70, styleText, index, controller),
       _cellText(item.nomClient, 150, styleText, index, controller),
       _cellText(
         AppData.formatPhoneNumber(telNumber1: item.tel1Client, telNumber2: item.tel2Client),
@@ -288,9 +294,9 @@ class ListTransportWidgetTable extends StatelessWidget {
         index,
         controller,
       ),
-      _cellText("${AppData.formatMoney(item.montantProduit)} DA", 120, styleText, index, controller),
-      _cellText('${AppData.formatMoney(item.montantLivrInterne)} DA', 120, styleText, index, controller),
-      _cellText('${AppData.formatMoney(item.montantLivrExterne)} DA', 120, styleText, index, controller),
+      _cellText("${AppData.formatMoney(item.montantProduit)} DA", 100, styleText, index, controller),
+      _cellText('${AppData.formatMoney(item.montantLivrInterne)} DA', 100, styleText, index, controller),
+      _cellText('${AppData.formatMoney(item.montantLivrExterne)} DA', 100, styleText, index, controller),
       _cellText('${AppData.formatMoney(item.total)} DA', 100, styleText, index, controller),
       _cellText(item.nomTransporteurExterne, 120, styleText, index, controller),
     ];
@@ -313,11 +319,27 @@ class ListTransportWidgetTable extends StatelessWidget {
         ),
       );
     }
-    cells.add(_cellText(item.poste, 100, styleText, index, controller));
     cells.add(_cellText(item.destination, 180, styleText, index, controller));
+    cells.add(_cellText(item.poste, 100, styleText, index, controller));
     return GestureDetector(
       onTap: () {
         controller.selectRow(index);
+      },
+      onDoubleTap: () {
+        controller.selectRow(index);
+        showDialog(
+          context: context,
+          builder: (context) => Center(
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                width: min(AppSizes.widthScreen - 80, 880),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+                child: DetailsTableWidget(item: item),
+              ),
+            ),
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -338,8 +360,8 @@ class ListTransportWidgetTable extends StatelessWidget {
 
   TextStyle _getRowStyle(BuildContext context, int index, ListTransportsController controller) =>
       (index == controller.selectIndex)
-      ? Theme.of(Get.context!).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold, color: AppColor.black)
-      : Theme.of(Get.context!).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.normal, color: AppColor.black);
+      ? Theme.of(Get.context!).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.bold, color: AppColor.black)
+      : Theme.of(Get.context!).textTheme.labelMedium!.copyWith(fontWeight: FontWeight.normal, color: AppColor.black);
 
   Widget _cellText(String text, double width, TextStyle? style, int index, ListTransportsController controller) =>
       Container(

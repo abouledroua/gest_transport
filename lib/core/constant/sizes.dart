@@ -5,6 +5,7 @@ class AppSizes {
   static late double widthScreen, heightScreen, fullHeight, fullWidth;
   static const appPadding = 16.0;
   static bool showSidebar = false;
+
   static setSizeScreen(context) {
     maxWidth = MediaQuery.of(context).size.width;
     widthScreen = MediaQuery.of(context).size.width;
@@ -13,23 +14,5 @@ class AppSizes {
     debugPrint('widthScreen=$widthScreen');
     fullHeight = MediaQuery.of(context).size.height;
     fullWidth = MediaQuery.of(context).size.width;
-    showSidebar = widthScreen > 1050;
   }
 }
-
-
-// import 'dart:math';
-
-// import 'package:flutter/material.dart';
-
-// const double maxWidth = 800;
-// late double widthScreen, heightScreen, fullHeight, fullWidth;
-
-
-// setSizeScreen(context) {
-//   widthScreen = min(MediaQuery.of(context).size.width, maxWidth);
-//   heightScreen = MediaQuery.of(context).size.height;
-
-//   fullHeight = MediaQuery.of(context).size.height;
-//   fullWidth = MediaQuery.of(context).size.width;
-// }

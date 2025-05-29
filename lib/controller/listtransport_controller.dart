@@ -50,7 +50,7 @@ class ListTransportsController extends GetxController {
     final mntLivrInterneCol = 'Mnt Livr Interne'.tr;
     final mntLivrExterneCol = 'Mnt Livr Externe'.tr;
     final totalCol = 'Total'.tr;
-    final transpExterneCol = 'Transp. Externe'.tr;
+    final transpExterneCol = 'Transporteur Externe'.tr;
     final etatCol = 'Etat'.tr;
     final posteCol = 'Poste'.tr;
     final destinationCol = 'Destination'.tr;
@@ -333,12 +333,12 @@ class ListTransportsController extends GetxController {
     required String phpFile,
     required String pWhere,
     required int limitStart,
-    required int limiEnd,
+    required int nbLigne,
   }) async {
     try {
       final (response, success) = await httpRequest(
         ftpFile: phpFile,
-        json: {"WHERE": pWhere, "LIMIT_START": limitStart.toString(), "LIMIT_END": limiEnd.toString()},
+        json: {"WHERE": pWhere, "LIMIT_START": limitStart.toString(), "NB_LIGNE": nbLigne.toString()},
       );
       if (success) {
         if (limitStart == 0) {
@@ -349,9 +349,9 @@ class ListTransportsController extends GetxController {
 
         for (var m in responsebody) {
           final e = Transport.fromJson(m);
-          e.num = allTransports.length + 1;
           allTransports.add(e);
         }
+
         complete = true;
       } else {
         updateBooleans(newloading: false, newerror: true, type: 0);
@@ -416,7 +416,7 @@ class ListTransportsController extends GetxController {
   Future getList({required bool showMessage}) async {
     if (!loading.value) {
       updateBooleans(newloading: true, newerror: false, type: 0);
-      int limitStart = 0, limitPas = 50, limiEnd = limitPas;
+      int limitStart = 0, limitPas = 100;
       String pWhere = getWhere();
       bool repeat = true;
       int nbElt = 0, cp = 0;
@@ -427,12 +427,11 @@ class ListTransportsController extends GetxController {
           nbElt = allTransports.length;
         }
         complete = false;
-        await getData(phpFile: "GET_TRANSPORTS.php", pWhere: pWhere, limitStart: limitStart, limiEnd: limiEnd);
+        await getData(phpFile: "GET_TRANSPORTS.php", pWhere: pWhere, limitStart: limitStart, nbLigne: limitPas);
         while (!complete) {
           await Future.delayed(const Duration(milliseconds: 80));
         }
         limitStart += limitPas;
-        limiEnd += limitPas;
         repeat = (nbElt != allTransports.length);
       }
 
@@ -551,6 +550,11 @@ class ListTransportsController extends GetxController {
         }
       }
     }
+
+    for (int i = 0; i < transports.length; i++) {
+      transports[i].num = transports.length - i;
+    }
+
     myData = MyData();
     if (filtering) {
       update();

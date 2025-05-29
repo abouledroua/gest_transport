@@ -23,6 +23,7 @@ class AppColor {
   static const Color textColor = Colors.black;
   static const Color primary = Colors.red;
   static const Color purple = Colors.deepPurple;
+  static const Color brown = Colors.brown;
   static const Color transfert = Colors.pink;
   static const Color print = Colors.blueGrey;
   static const Color notifications = Colors.red;
@@ -121,7 +122,7 @@ class AppColor {
     Colors.tealAccent.shade100,
     Colors.greenAccent.shade100,
     Colors.deepPurpleAccent.shade100,
-    Colors.tealAccent.shade100
+    Colors.tealAccent.shade100,
   ];
 
   static List<Color> darkColor = [
@@ -151,7 +152,7 @@ class AppColor {
     Colors.indigo,
     Colors.grey,
     Colors.yellow,
-    Colors.black12
+    Colors.black12,
   ];
 }
 
