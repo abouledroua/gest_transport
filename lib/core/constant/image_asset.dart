@@ -5,6 +5,7 @@ class AppImageAsset {
   static String welcome = "$rootAsset/welcome.jpg";
   static String testServer = "$rootAsset/test_server.png";
   static String myServer = "$rootAsset/my_server.png";
+  static String phone = "$rootAsset/phone_icon.png";
 
   static String login = "$rootAsset/login.png";
   static String logout = "$rootAsset/logout.png";

@@ -1,7 +1,7 @@
-arTr() => {
+Map<String, String> arTr() => {
   "app_title": "تسيير النقل",
   "dashboard": "الصفحة الرئيسية",
-  "transport": "النــقل",
+  "transport": "النـقل",
   "livraison_produit": "توصيل المنتج",
   "livraison_argent": "توصيل المال",
   "clients_fournisseurs": "الزبائن/الموردين",
@@ -17,6 +17,9 @@ arTr() => {
   "bonsoir": "ســـلام",
   "oui": "نعــم",
   "non": "لا",
+  'Valider': "تأكيد",
+  "Entrez le nombre de copies": "أدخل عدد النسخ",
+  "Nombre de copies": "عدد النسخ",
   "Exercice": "السنة",
   "Choisir l'Etat": "اختر الحالة",
   "login_title": "قم بتسجيل الدخول إلى حسابك",
@@ -87,4 +90,5 @@ arTr() => {
   'Montant Transport Interne': "مبلغ النقل الداخلي",
   'Montant Transport Externe': "مبلغ النقل الخارجي",
   "Type": "النوع",
+  "Developper": "برنامج مطور من طرف بولدروع عمر - 333 750 0778",
 };

@@ -14,31 +14,37 @@ class MySearchController extends GetxController {
 
   Future<bool> onWillPop() async =>
       (await showDialog(
-          context: Get.context!,
-          builder: (context) => AlertDialog(
-                  title: Row(children: [
-                    Icon(Icons.exit_to_app_sharp, color: AppColor.red),
-                    Padding(padding: EdgeInsets.only(left: 8.0), child: Text('question2'.tr))
-                  ]),
-                  content: Text('question1'.tr),
-                  actions: <Widget>[
-                    TextButton(
-                        onPressed: () => Get.back(result: false),
-                        child: Text('non'.tr, style: TextStyle(color: AppColor.red))),
-                    TextButton(
-                        onPressed: () {
-                          Get.offAllNamed(AppRoute.login);
-                        },
-                        child: Text('oui'.tr, style: TextStyle(color: AppColor.green)))
-                  ]))) ??
+        context: Get.context!,
+        builder: (context) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.exit_to_app_sharp, color: AppColor.red),
+              Padding(padding: EdgeInsets.only(left: 8.0), child: Text('question2'.tr)),
+            ],
+          ),
+          content: Text('question1'.tr),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Get.back(result: false),
+              child: Text('non'.tr, style: TextStyle(color: AppColor.red)),
+            ),
+            TextButton(
+              onPressed: () {
+                Get.offAllNamed(AppRoute.login);
+              },
+              child: Text('oui'.tr, style: TextStyle(color: AppColor.green)),
+            ),
+          ],
+        ),
+      )) ??
       false;
 
-  setValider(pValue) {
+  void setValider(bool pValue) {
     valider = pValue;
     update();
   }
 
-  updateType(int value) {
+  void updateType(int value) {
     type = value;
     update();
   }
@@ -50,8 +56,8 @@ class MySearchController extends GetxController {
     super.onInit();
   }
 
-  initConnect() {
-    AppSizes.setSizeScreen(Get.context);
+  void initConnect() {
+    AppSizes.setSizeScreen(Get.context!);
     queryController = TextEditingController();
   }
 

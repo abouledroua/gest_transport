@@ -19,7 +19,7 @@ class LocaleController extends GetxController {
     await initializeDateFormatting(lang, null);
   }
 
-  changeLang(String langCode) async {
+  Future<void> changeLang(String langCode) async {
     Locale locale = Locale(langCode);
     sc.sharedPrefs.setString("lang", langCode);
     await initializeDateFormatting(langCode, null);

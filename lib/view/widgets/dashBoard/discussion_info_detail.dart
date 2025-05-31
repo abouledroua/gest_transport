@@ -18,12 +18,7 @@ class DiscussionInfoDetail extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(40),
-            child: Image.asset(
-              info.imageSrc!,
-              height: 38,
-              width: 38,
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset(info.imageSrc!, height: 38, width: 38, fit: BoxFit.cover),
           ),
           Expanded(
             child: Padding(
@@ -35,22 +30,12 @@ class DiscussionInfoDetail extends StatelessWidget {
                     info.name!,
                     style: TextStyle(color: AppColor.textColor, fontWeight: FontWeight.w600),
                   ),
-                  Text(
-                    info.date!,
-                    style: TextStyle(
-                      color: AppColor.textColor.withOpacity(0.5),
-                      fontSize: 13,
-                    ),
-                  ),
+                  Text(info.date!, style: TextStyle(color: AppColor.textColor.withValues(alpha: 0.5), fontSize: 13)),
                 ],
               ),
             ),
           ),
-          Icon(
-            Icons.more_vert_rounded,
-            color: AppColor.textColor.withOpacity(0.5),
-            size: 18,
-          )
+          Icon(Icons.more_vert_rounded, color: AppColor.textColor.withValues(alpha:0.5), size: 18),
         ],
       ),
     );

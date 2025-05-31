@@ -14,13 +14,15 @@ class SearchField extends StatelessWidget {
     }
     MySearchController controller = Get.put(MySearchController());
     return TextField(
-        controller: controller.queryController,
-        decoration: InputDecoration(
-            hintText: "Recherche",
-            helperStyle: TextStyle(color: AppColor.textColor.withOpacity(0.5), fontSize: 15),
-            fillColor: AppColor.secondaryColor,
-            filled: true,
-            border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
-            prefixIcon: Icon(Icons.search, color: AppColor.textColor.withOpacity(0.5))));
+      controller: controller.queryController,
+      decoration: InputDecoration(
+        hintText: "Recherche",
+        helperStyle: TextStyle(color: AppColor.textColor.withValues(alpha: 0.5), fontSize: 15),
+        fillColor: AppColor.secondaryColor,
+        filled: true,
+        border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(10)),
+        prefixIcon: Icon(Icons.search, color: AppColor.textColor.withValues(alpha: 0.5)),
+      ),
+    );
   }
 }

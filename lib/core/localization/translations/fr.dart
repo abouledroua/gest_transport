@@ -1,4 +1,4 @@
-frTr() => {
+Map<String, String> frTr() => {
   "app_title": "Gestion Transport",
   "dashboard": "Acceuil",
   "transport": "Transport",
@@ -16,6 +16,9 @@ frTr() => {
   "bonsoir": "Bonsoir",
   "oui": "Oui",
   "non": "Non",
+  'Valider': "Valider",
+  "Nombre de copies": "Nombre de copies",
+  "Entrez le nombre de copies": "Entrez le nombre de copies",
   "langue": "Langue",
   "Exercice": "Exercice",
   "Détails du transport": "Détails du Transport",
@@ -88,4 +91,5 @@ frTr() => {
   'Montant Transport Interne': "Montant Transport Interne",
   'Montant Transport Externe': "Montant Transport Externe",
   "Type": "Type",
+  "Developper": "Logiciel Développé Par Bouledroua Amor - 0778 750 333",
 };

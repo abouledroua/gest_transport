@@ -8,14 +8,14 @@ import 'myuser_controller.dart';
 class PrivacyController extends GetxController {
   bool accept = false;
 
-  updateAccepte() {
+  void updateAccepte() {
     accept = !accept;
     update();
   }
 
   Future<bool> onWillPop() async => false;
 
-  continuer() {
+  void continuer() {
     SettingServices c = Get.find();
     MyUserController userController = Get.find();
     c.sharedPrefs.setInt("Privacy_${userController.idUser}", 1);
@@ -25,7 +25,7 @@ class PrivacyController extends GetxController {
   @override
   void onInit() {
     WidgetsFlutterBinding.ensureInitialized();
-    AppSizes.setSizeScreen(Get.context);
+    AppSizes.setSizeScreen(Get.context!);
     super.onInit();
   }
 }

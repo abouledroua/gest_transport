@@ -76,7 +76,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/icons/
   fonts: 
     - family : Segoe
       fonts:
@@ -84,5 +83,20 @@ flutter:
     - family : Arabic
       fonts:
         - asset: assets/fonts/arabtype.ttf
+    - family : Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal-Regular.ttf
+        - asset: assets/fonts/Tajawal-Bold.ttf
+          weight: 900
+    - family : Palatino
+      fonts:
+        - asset: assets/fonts/pala.ttf
+        - asset: assets/fonts/palab.ttf
+          weight: 900
+        - asset: assets/fonts/palabi.ttf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/palai.ttf
+          style: italic
 flutter_intl:
   enabled: true

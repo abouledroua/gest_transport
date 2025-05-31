@@ -6,7 +6,7 @@ class AppSizes {
   static const appPadding = 16.0;
   static bool showSidebar = false;
 
-  static setSizeScreen(context) {
+  static void setSizeScreen(BuildContext context) {
     maxWidth = MediaQuery.of(context).size.width;
     widthScreen = MediaQuery.of(context).size.width;
     // widthScreen = min(MediaQuery.of(context).size.width, maxWidth);

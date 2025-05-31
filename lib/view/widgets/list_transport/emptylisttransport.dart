@@ -22,12 +22,8 @@ class EmptyListTransports extends StatelessWidget {
             children: [
               Center(
                 child: Text(
-                  controller.error ? "Erreur de connexion".tr : "Liste_vide".tr,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: controller.error ? AppColor.red : AppColor.green,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  "Liste_vide".tr,
+                  style: TextStyle(fontSize: 22, color: AppColor.green, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 10),

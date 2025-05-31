@@ -16,7 +16,7 @@ class MyUserController extends GetxController {
       transaction = false,
       affichePrix = false;
 
-  clearUser() {
+  void clearUser() {
     idUser = 0;
     username = "";
     password = "";
@@ -33,7 +33,7 @@ class MyUserController extends GetxController {
     affichePrix = false;
   }
 
-  setUser(
+  void setUser(
       {required int pidUser,
       required String puserName,
       required String ppassword,
@@ -61,7 +61,6 @@ class MyUserController extends GetxController {
     caisse = pcaise;
     stats = pstats;
     retour = pretour;
-    transaction = ptrans;
     parametres = pparam;
     update();
   }

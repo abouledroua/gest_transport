@@ -1,4 +1,4 @@
-enTr() => {
+Map<String, String> enTr() => {
   "app_title": "Transport Management",
   "dashboard": "Dashboard",
   "transport": "Transportation",
@@ -17,6 +17,9 @@ enTr() => {
   "Détails du transport": "Transport Details",
   "oui": "Yes",
   "non": "No",
+  'Valider': "Confirm",
+  "Entrez le nombre de copies": "Enter the number of copies",
+  "Nombre de copies": "Number of copies",
   "langue": "Language",
   "Exercice": "Year",
   "Choisir l'Etat": "Choose State",
@@ -88,4 +91,5 @@ enTr() => {
   'Montant Transport Interne': "Internal Transport Amount",
   'Montant Transport Externe': "External Transport Amount",
   "Type": "Type",
+  "Developper": "Software Developed By Bouledroua Amor - 0778 750 333",
 };

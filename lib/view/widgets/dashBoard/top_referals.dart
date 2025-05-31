@@ -14,10 +14,7 @@ class TopReferals extends StatelessWidget {
     return Container(
       height: 350,
       padding: EdgeInsets.all(AppSizes.appPadding),
-      decoration: BoxDecoration(
-        color: AppColor.secondaryColor,
-        borderRadius: BorderRadius.circular(10),
-      ),
+      decoration: BoxDecoration(color: AppColor.secondaryColor, borderRadius: BorderRadius.circular(10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,35 +23,27 @@ class TopReferals extends StatelessWidget {
             children: [
               Text(
                 'TopReferals',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: AppColor.textColor,
-                ),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColor.textColor),
               ),
               Text(
                 'View All',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: AppColor.textColor.withOpacity(0.5),
+                  color: AppColor.textColor.withValues(alpha: 0.5),
                 ),
               ),
             ],
           ),
-          SizedBox(
-            height: AppSizes.appPadding,
-          ),
+          SizedBox(height: AppSizes.appPadding),
           Expanded(
             child: ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: referalData.length,
-              itemBuilder: (context, index) => ReferalInfoDetail(
-                info: referalData[index],
-              ),
+              itemBuilder: (context, index) => ReferalInfoDetail(info: referalData[index]),
             ),
-          )
+          ),
         ],
       ),
     );

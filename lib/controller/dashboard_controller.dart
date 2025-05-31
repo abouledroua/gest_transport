@@ -5,15 +5,15 @@ class DashBoardController extends GetxController {
   bool _versionDemo = true;
   int _index = 1;
 
-  get isVersionDemo => _versionDemo;
-  get currentIndex => _index;
+  bool get  isVersionDemo => _versionDemo;
+  int get currentIndex => _index;
 
-  setVersionDemo(bool value) {
+  void setVersionDemo(bool value) {
     _versionDemo = value;
     update();
   }
 
-  setIndex(int newIndex) {
+  void setIndex(int newIndex) {
     _index = newIndex;
     update();
   }

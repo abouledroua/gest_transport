@@ -5,12 +5,12 @@ import '../../../core/constant/data.dart';
 class PrivacyText extends StatelessWidget {
   const PrivacyText({super.key});
 
-  title(String text) => Padding(
+  Padding title(String text) => Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(text,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)));
 
-  details(String text) => Padding(
+  Padding details(String text) => Padding(
       padding: const EdgeInsets.all(8),
       child: Text(text, style: const TextStyle(fontSize: 14)));
 

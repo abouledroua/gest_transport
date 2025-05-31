@@ -10,6 +10,8 @@ import '../core/constant/routes.dart';
 import '../core/constant/sizes.dart';
 import '../core/services/httprequest.dart';
 import '../core/services/settingservice.dart';
+import 'parametre_controller.dart';
+import 'update_controller.dart';
 
 class LoginController extends GetxController {
   late TextEditingController userNameController, passController;
@@ -17,23 +19,25 @@ class LoginController extends GetxController {
   int type = 0;
   bool valider = false, wrongCredent = false, erreurServeur = false;
 
-  setValider(pValue) {
+  void setValider(bool pValue) {
     valider = pValue;
     update();
   }
 
-  updateType(int value) {
+  void updateType(int value) {
     type = value;
     update();
   }
 
-  onValidate() async {
+  Future<void> onValidate() async {
     setValider(true);
     String userName = AppData.removeEspace(userNameController.text.toUpperCase());
     String password = AppData.removeEspace(passController.text.toUpperCase());
     try {
-      final (response, success) =
-          await httpRequest(ftpFile: 'EXIST_USER.php', json: {"USERNAME": userName, "PASSWORD": password});
+      final (response, success) = await httpRequest(
+        ftpFile: 'EXIST_USER.php',
+        json: {"USERNAME": userName, "PASSWORD": password},
+      );
       if (success) {
         erreurServeur = false;
         wrongCredent = false;
@@ -47,21 +51,22 @@ class LoginController extends GetxController {
         MyUserController userController = Get.find();
         for (var m in responsebody) {
           createVarUser(
-              userController: userController,
-              idUser: AppData.getInt(m, 'ID_USER'),
-              paffprix: AppData.getInt(m, 'AFFICHE_PRIX') == 1,
-              plivr: AppData.getInt(m, 'LIVRAISON') == 1,
-              tresorerie: AppData.getInt(m, 'TRESORERIE') == 1,
-              prc: AppData.getInt(m, 'REGLEMENT_CLIENT') == 1,
-              prf: AppData.getInt(m, 'REGLEMENT_FOURNISSEUR') == 1,
-              pretour: AppData.getInt(m, 'RETOUR') == 1,
-              pcaisse: AppData.getInt(m, 'CAISSE') == 1,
-              ptransport: AppData.getInt(m, 'TRANSPORT') == 1,
-              pstat: AppData.getInt(m, 'STATISTIQUE') == 1,
-              ptrans: AppData.getInt(m, 'TRANSACTION') == 1,
-              parametre: AppData.getInt(m, 'PARAMETRE') == 1,
-              password: password,
-              userName: userName);
+            userController: userController,
+            idUser: AppData.getInt(m, 'ID_USER'),
+            paffprix: AppData.getInt(m, 'AFFICHE_PRIX') == 1,
+            plivr: AppData.getInt(m, 'LIVRAISON') == 1,
+            tresorerie: AppData.getInt(m, 'TRESORERIE') == 1,
+            prc: AppData.getInt(m, 'REGLEMENT_CLIENT') == 1,
+            prf: AppData.getInt(m, 'REGLEMENT_FOURNISSEUR') == 1,
+            pretour: AppData.getInt(m, 'RETOUR') == 1,
+            pcaisse: AppData.getInt(m, 'CAISSE') == 1,
+            ptransport: AppData.getInt(m, 'TRANSPORT') == 1,
+            pstat: AppData.getInt(m, 'STATISTIQUE') == 1,
+            ptrans: AppData.getInt(m, 'TRANSACTION') == 1,
+            parametre: AppData.getInt(m, 'PARAMETRE') == 1,
+            password: password,
+            userName: userName,
+          );
         }
         if (userController.idUser == 0) {
           effacerLastUser();
@@ -78,7 +83,10 @@ class LoginController extends GetxController {
         erreur = " seurveur 1";
         erreurServeur = true;
         AppData.mySnackBar(
-            title: 'Login', message: "Probleme lors de la connexion avec le serveur !!!", color: AppColor.red);
+          title: 'Login',
+          message: "Probleme lors de la connexion avec le serveur !!!",
+          color: AppColor.red,
+        );
         if (kDebugMode) {
           debugPrint("Probleme lors de la connexion avec le serveur !!!");
         }
@@ -95,37 +103,39 @@ class LoginController extends GetxController {
     }
   }
 
-  createVarUser(
-      {required MyUserController userController,
-      required int idUser,
-      required String userName,
-      required String password,
-      required bool prc,
-      required bool tresorerie,
-      required bool paffprix,
-      required bool parametre,
-      required bool prf,
-      required bool pcaisse,
-      required bool pstat,
-      required bool ptransport,
-      required bool pretour,
-      required bool plivr,
-      required bool ptrans}) async {
+  Future<void> createVarUser({
+    required MyUserController userController,
+    required int idUser,
+    required String userName,
+    required String password,
+    required bool prc,
+    required bool tresorerie,
+    required bool paffprix,
+    required bool parametre,
+    required bool prf,
+    required bool pcaisse,
+    required bool pstat,
+    required bool ptransport,
+    required bool pretour,
+    required bool plivr,
+    required bool ptrans,
+  }) async {
     userController.setUser(
-        paffprix: paffprix,
-        pcaise: pcaisse,
-        plivr: plivr,
-        pretour: pretour,
-        pstats: pstat,
-        ptransport: ptransport,
-        pidUser: idUser,
-        prc: prc,
-        prf: prf,
-        ptrans: ptrans,
-        pparam: parametre,
-        ppassword: password,
-        ptres: tresorerie,
-        puserName: userName);
+      paffprix: paffprix,
+      pcaise: pcaisse,
+      plivr: plivr,
+      pretour: pretour,
+      pstats: pstat,
+      ptransport: ptransport,
+      pidUser: idUser,
+      prc: prc,
+      prf: prf,
+      ptrans: ptrans,
+      pparam: parametre,
+      ppassword: password,
+      ptres: tresorerie,
+      puserName: userName,
+    );
 
     if (kDebugMode) {
       debugPrint("Its Ok ----- Connected ----------------");
@@ -158,8 +168,8 @@ class LoginController extends GetxController {
     super.onInit();
   }
 
-  initConnect() async {
-    AppSizes.setSizeScreen(Get.context);
+  Future<void> initConnect() async {
+    AppSizes.setSizeScreen(Get.context!);
     AppData.reparerBDD(showToast: false);
     type = 0;
     //Get.reset();
@@ -177,9 +187,18 @@ class LoginController extends GetxController {
       passController.text = passPref;
       onValidate();
     }
+    if (Get.isRegistered<ParametreController>()) {
+      Get.delete<ParametreController>();
+    }
+    Get.put(ParametreController());
+
+    if (Get.isRegistered<UpdateController>()) {
+      Get.delete<UpdateController>();
+    }
+    Get.put(UpdateController());
   }
 
-  effacerLastUser() {
+  void effacerLastUser() {
     SettingServices c = Get.find();
     c.sharedPrefs.setString('LastUser-${AppData.dossier}', "");
     c.sharedPrefs.setString('LastPass-${AppData.dossier}', "");

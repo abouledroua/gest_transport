@@ -1,45 +1,54 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
 import 'dart:convert';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
-import '../core/class/mydata.dart';
+import '../core/class/details_transport.dart';
 import '../core/class/transport.dart';
 import '../core/constant/color.dart';
 import '../core/constant/data.dart';
+import '../core/constant/image_asset.dart';
+import '../core/constant/routes.dart';
 import '../core/constant/sizes.dart';
+import '../core/impression.dart';
+import '../core/localization/change_local.dart';
 import '../core/services/httprequest.dart';
 
 class ListTransportsController extends GetxController {
   RxBool loading = false.obs,
       loadingFilter = false.obs,
+      loadingDetails = false.obs,
+      error = false.obs,
       filter = false.obs,
+      errorExercice = false.obs,
+      errorDestination = false.obs,
       loadingDestination = false.obs,
       loadingExercice = false.obs;
-  bool error = false,
-      sort = false,
-      complete = false,
-      sortAscending = true,
-      errorExercice = false,
-      errorDestination = false;
-  List<String> etatTab = [];
+  ScrollController? verticalController;
+  List<DetailsTransport> detailTransport = [];
+  final FocusNode tableFocusNode = FocusNode();
+  bool sort = false, complete = false, sortAscending = true;
   String queryClient = "", queryTransporteurExterne = "";
   String? dropExercice, sortColumn, dropEtat, dropDestination;
   List<DropdownMenuItem> myDropEtatList = [], myDropDestinationList = [], myDropExerciceList = [];
-  List<String> exDes = [], destinDes = [];
+  List<String> exDes = [], destinDes = [], etatTab = [];
   int sortIndex = 0, selectIndex = -1;
   late TextEditingController clientController, dateController, dateAuController, transpExterneController;
   List<Transport> allTransports = [], transports = [];
-  late MyData myData;
+  Transport? itemSelected;
 
   DropdownMenuItem myDropMenuItem(String label) => DropdownMenuItem(
     value: label,
     child: Center(child: Text(label, textAlign: TextAlign.center)),
   );
 
-  sortBy(String column) {
+  void sortBy(String column) {
     final nCol = 'N°'.tr;
     final refCol = 'Réf'.tr;
     final dateCol = 'Date'.tr;
@@ -97,22 +106,22 @@ class ListTransportsController extends GetxController {
     update();
   }
 
-  updateDropExerciceValue(value) {
+  void updateDropExerciceValue(String? value) {
     dropExercice = value;
     getList(showMessage: true);
   }
 
-  updateDropDestinationValue(value) {
+  void updateDropDestinationValue(String? value) {
     dropDestination = value;
     getList(showMessage: true);
   }
 
-  updateDropEtatValue(value) {
+  void updateDropEtatValue(String value) {
     dropEtat = value;
     getList(showMessage: true);
   }
 
-  initDropExercice() {
+  void initDropExercice() {
     myDropExerciceList.clear();
     exDes.clear();
     myDropExerciceList.add(myDropMenuItem('Tous'.tr));
@@ -124,7 +133,7 @@ class ListTransportsController extends GetxController {
     dropExercice = year;
   }
 
-  initDropEtat() {
+  void initDropEtat() {
     etatTab.clear();
     etatTab.add('Livré Partiellement'.tr);
     etatTab.add('Livré Completement'.tr);
@@ -142,7 +151,7 @@ class ListTransportsController extends GetxController {
     dropEtat = 'Livré Partiellement'.tr;
   }
 
-  initDropDestination() {
+  void initDropDestination() {
     myDropDestinationList.clear();
     destinDes.clear();
     myDropDestinationList.add(myDropMenuItem('Tous Les Destination'.tr));
@@ -151,93 +160,30 @@ class ListTransportsController extends GetxController {
     dropDestination = 'Tous Les Destination'.tr;
   }
 
-  initDate() {
+  void initDate() {
     var now = DateTime.now();
     dateController.text = "${now.year}-${now.month}-${now.day}";
     if (kDebugMode) {
-      dateController.text = "2025-05-28";
+      dateController.text = "2025-05-11";
     }
   }
 
-  onSortColumn(int columnIndex, bool ascending) {
-    sortIndex = columnIndex;
-    switch (columnIndex) {
-      case 2:
-        if (sort) {
-          transports.sort((a, b) => a.date.compareTo(b.date));
-        } else {
-          transports.sort((a, b) => b.date.compareTo(a.date));
-        }
-        break;
-      case 4:
-        if (sort) {
-          transports.sort((a, b) => a.nomClient.compareTo(b.date));
-        } else {
-          transports.sort((a, b) => b.nomClient.compareTo(a.date));
-        }
-        break;
-      case 6:
-        if (sort) {
-          transports.sort((a, b) => a.montantProduit.compareTo(b.montantProduit));
-        } else {
-          transports.sort((a, b) => b.montantProduit.compareTo(a.montantProduit));
-        }
-        break;
-      case 7:
-        if (sort) {
-          transports.sort((a, b) => a.montantLivrInterne.compareTo(b.montantLivrInterne));
-        } else {
-          transports.sort((a, b) => b.montantLivrInterne.compareTo(a.montantLivrInterne));
-        }
-        break;
-      case 8:
-        if (sort) {
-          transports.sort((a, b) => a.montantLivrExterne.compareTo(b.montantLivrExterne));
-        } else {
-          transports.sort((a, b) => b.montantLivrExterne.compareTo(a.montantLivrExterne));
-        }
-        break;
-      case 9:
-        if (sort) {
-          transports.sort((a, b) => a.total.compareTo(b.total));
-        } else {
-          transports.sort((a, b) => b.total.compareTo(a.total));
-        }
-        break;
-      case 10:
-        if (sort) {
-          transports.sort((a, b) => a.nomTransporteurExterne.compareTo(b.nomTransporteurExterne));
-        } else {
-          transports.sort((a, b) => b.nomTransporteurExterne.compareTo(a.nomTransporteurExterne));
-        }
-        break;
-      case 13:
-        if (sort) {
-          transports.sort((a, b) => a.destination.compareTo(b.destination));
-        } else {
-          transports.sort((a, b) => b.destination.compareTo(a.destination));
-        }
-        break;
-      default:
-    }
-    sort = !sort;
-    myData = MyData();
-    update();
-  }
-
-  updateBooleans({required newloading, required newerror, required type}) {
+  void updateBooleans({required bool newloading, required bool newerror, required int type}) {
     switch (type) {
       case 0:
         loading.value = newloading;
-        error = newerror;
+        error.value = newerror;
         break;
       case 1:
         loadingExercice.value = newloading;
-        errorExercice = newerror;
+        errorExercice.value = newerror;
         break;
       case 2:
         loadingDestination.value = newloading;
-        errorDestination = newerror;
+        errorDestination.value = newerror;
+        break;
+      case 3:
+        loadingDetails.value = newloading;
         break;
       default:
     }
@@ -245,12 +191,12 @@ class ListTransportsController extends GetxController {
     update();
   }
 
-  updateClientQuery(String newValue) {
+  void updateClientQuery(String newValue) {
     queryClient = newValue;
     filtrer();
   }
 
-  updateTransporteurExterneQuery(String newValue) {
+  void updateTransporteurExterneQuery(String newValue) {
     queryTransporteurExterne = newValue;
     filtrer();
   }
@@ -374,7 +320,7 @@ class ListTransportsController extends GetxController {
     }
   }
 
-  getWhere() {
+  String getWhere() {
     String pWhere = "";
     if (dropExercice != "Tous".tr) {
       pWhere += " AND E.EXERCICE = $dropExercice";
@@ -439,7 +385,7 @@ class ListTransportsController extends GetxController {
     }
   }
 
-  deleteProduit(Transport item) async {
+  Future<void> deleteProduit(Transport item) async {
     // String serverDir = AppData.getServerDirectory();
     // var url = "$serverDir/DELETE_PRODUIT.php";
     // debugPrint(url);
@@ -482,10 +428,107 @@ class ListTransportsController extends GetxController {
     //     });
   }
 
+  Future getDetails({required Transport item, bool priniting = false}) async {
+    if (!loadingDetails.value) {
+      updateBooleans(newloading: true, newerror: false, type: 3);
+      try {
+        detailTransport.clear();
+        final (response, success) = await httpRequest(
+          ftpFile: "GET_DETAILS_TRANSPORTS.php",
+          json: {"ID_TRANSPORT": item.idTransport.toString(), "EXERCICE": item.exercice.toString()},
+        );
+        if (success) {
+          var responsebody = jsonDecode(response!.body);
+          for (var m in responsebody) {
+            final e = DetailsTransport.fromJson(m);
+            detailTransport.add(e);
+          }
+          updateBooleans(newloading: false, newerror: false, type: 3);
+
+          if (priniting) {
+            printBonTransport(item);
+          }
+        } else {
+          Get.back();
+          updateBooleans(newloading: false, newerror: true, type: 3);
+          AppData.mySnackBar(
+            title: 'Liste des Transports'.tr,
+            message: "Probleme de Connexion avec le serveur !!!",
+            color: AppColor.red,
+          );
+        }
+      } catch (error) {
+        debugPrint("erreur getDetails: $error");
+        updateBooleans(newloading: false, newerror: true, type: 3);
+        Get.back();
+        AppData.mySnackBar(
+          title: 'Liste des Transports'.tr,
+          message: "Probleme de Connexion avec le serveur !!!",
+          color: AppColor.red,
+        );
+      }
+    }
+  }
+
+  Future<int?> showCopyNumberDialog() async {
+    final TextEditingController controller = TextEditingController(text: "1");
+    final FocusNode textFocusNode = FocusNode();
+    return showDialog<int>(
+      context: Get.context!,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            textFocusNode.requestFocus();
+            controller.selection = TextSelection(baseOffset: 0, extentOffset: controller.text.length);
+          });
+          return Shortcuts(
+            shortcuts: <LogicalKeySet, Intent>{LogicalKeySet(LogicalKeyboardKey.escape): const ActivateIntent()},
+            child: Actions(
+              actions: <Type, Action<Intent>>{
+                ActivateIntent: CallbackAction<Intent>(
+                  onInvoke: (Intent intent) {
+                    Navigator.of(context).pop();
+                    return null;
+                  },
+                ),
+              },
+              child: AlertDialog(
+                title: Text("Nombre de copies".tr),
+                content: TextField(
+                  controller: controller,
+                  focusNode: textFocusNode,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: "Entrez le nombre de copies".tr),
+                  onSubmitted: (value) {
+                    final intValue = int.tryParse(value);
+                    Navigator.of(context).pop(intValue);
+                  },
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(), // Cancel
+                    child: Text("Annuler".tr),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      final value = int.tryParse(controller.text);
+                      Navigator.of(context).pop(value);
+                    },
+                    child: Text("Valider".tr),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   void onInit() {
     WidgetsFlutterBinding.ensureInitialized();
-    AppSizes.setSizeScreen(Get.context);
+    AppSizes.setSizeScreen(Get.context!);
     clientController = TextEditingController();
     transpExterneController = TextEditingController();
     dateAuController = TextEditingController();
@@ -502,19 +545,18 @@ class ListTransportsController extends GetxController {
     super.onInit();
   }
 
-  selectRow(int index) {
+  void selectRow(int index) {
     selectIndex = index;
-    myData = MyData();
-    // AppData.mySnackBar(message: index, color: AppColor.red, title: index);
+    itemSelected = transports[index];
     update();
   }
 
-  resetSelectedIndex() {
+  void resetSelectedIndex() {
     selectIndex = -1;
     update();
   }
 
-  updatefiltrer() {
+  void updatefiltrer() {
     filter.value = !filter.value;
     update();
   }
@@ -525,10 +567,11 @@ class ListTransportsController extends GetxController {
     transpExterneController.dispose();
     dateAuController.dispose();
     dateController.dispose();
+    tableFocusNode.dispose();
     super.onClose();
   }
 
-  filtrer({bool filtering = true}) {
+  void filtrer({bool filtering = true}) {
     transports.clear();
     if (queryClient.removeAllWhitespace.isEmpty && queryTransporteurExterne.removeAllWhitespace.isEmpty) {
       transports.addAll(allTransports);
@@ -555,7 +598,6 @@ class ListTransportsController extends GetxController {
       transports[i].num = transports.length - i;
     }
 
-    myData = MyData();
     if (filtering) {
       update();
     } else {
@@ -563,13 +605,70 @@ class ListTransportsController extends GetxController {
     }
   }
 
-  updateDate(selectDate) {
+  void updateDate(String selectDate) {
     dateController.text = selectDate;
     getList(showMessage: true);
   }
 
-  updateDateAu(selectDate) {
+  void updateDateAu(String selectDate) {
     dateAuController.text = selectDate;
     getList(showMessage: true);
+  }
+
+  List<List<String>> getTablePrint(int id, exercice) {
+    List<DetailsTransport> vDetails = detailTransport
+        .where((item) => item.idTransport == id && item.exercice == exercice)
+        .toList();
+    List<List<String>> data = [];
+    for (var item in vDetails) {
+      List<String> row = [];
+      row.add(item.nomFournisseur);
+      row.add(AppData.formatMoney(item.qte));
+      row.add(AppData.formatMoney(item.montantTransExterne));
+      row.add(AppData.formatMoney(item.montantProduit));
+      data.add(row);
+    }
+    return data;
+  }
+
+  void printBonTransport(Transport item) async {
+    await showCopyNumberDialog().then((nb) async {
+      if (nb == null) return;
+      if (nb <= 0) return;
+      final doc = pw.Document();
+      const double inch = 72.0;
+      final theme = pw.ThemeData.withFont(
+        base: pw.Font.ttf(await rootBundle.load('assets/fonts/Tajawal-Regular.ttf')),
+        bold: pw.Font.ttf(await rootBundle.load('assets/fonts/Tajawal-Bold.ttf')),
+      );
+      final phoneIconData = await rootBundle.load(AppImageAsset.phone);
+      final phoneIcon = pw.MemoryImage(phoneIconData.buffer.asUint8List());
+      List<List<String>> data = getTablePrint(item.idTransport, item.exercice);
+      LocaleController langController = Get.find();
+      PdfPageFormat pageFormat = PdfPageFormat(8.5 * inch, 11.0 * inch, marginAll: inch);
+      for (int i = 0; i < nb; i++) {
+        doc.addPage(
+          pw.MultiPage(
+            textDirection: langController.language == Locale('ar') ? pw.TextDirection.rtl : pw.TextDirection.ltr,
+            maxPages: 100000,
+            pageFormat: pageFormat,
+            theme: theme,
+            margin: pw.EdgeInsets.all(14),
+            footer: (context) =>
+                pw.Text((context.pagesCount < 2) ? '' : 'Page ${context.pageNumber} / ${context.pagesCount}'),
+            build: (context) => getBonTransport(item, data, context, phoneIcon),
+          ),
+        );
+      }
+
+      if (kDebugMode) {
+        Get.toNamed(
+          AppRoute.impression,
+          arguments: {'DOC': doc, 'TITLE': 'List_Transports'.tr, 'PAGE_FORMAT': pageFormat},
+        );
+      } else {
+        await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => doc.save());
+      }
+    });
   }
 }

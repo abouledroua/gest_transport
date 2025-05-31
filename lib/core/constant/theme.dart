@@ -8,7 +8,7 @@ String myFontFamily = 'Segoe', arabicFontFamily = 'Arabic';
 
 String? fontFamily = googleFontFamily;
 
-myTheme(BuildContext context) => ThemeData(
+ThemeData myTheme(BuildContext context) => ThemeData(
   primaryColor: Colors.red,
   appBarTheme: AppBarTheme(backgroundColor: Theme.of(context).primaryColor),
   textTheme: TextTheme(

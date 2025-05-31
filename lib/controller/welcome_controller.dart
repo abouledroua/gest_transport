@@ -13,14 +13,14 @@ class WelcomeController extends GetxController {
     super.onReady();
   }
 
-  close() {
+  void close() {
     Get.offAllNamed(AppRoute.login);
   }
 
   @override
   void onInit() async {
     WidgetsFlutterBinding.ensureInitialized();
-    AppSizes.setSizeScreen(Get.context);
+    AppSizes.setSizeScreen(Get.context!);
     super.onInit();
   }
 }

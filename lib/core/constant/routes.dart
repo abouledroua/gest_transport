@@ -8,6 +8,7 @@ class AppRoute {
   static const String homePage = "/HomePage";
   static const String activation = "/Activation";
   static const String apropos = "/Apropos";
+  static const String impression = "/Impression";
 
   static const String listTransport = "/listTransport";
   static const String fichePersonne = "/FichePersonne";

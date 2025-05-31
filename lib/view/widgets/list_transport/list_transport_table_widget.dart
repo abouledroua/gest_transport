@@ -12,65 +12,63 @@ import '../../../core/constant/color.dart';
 import '../../../core/constant/data.dart';
 import '../../../core/constant/sizes.dart';
 import '../../../core/localization/change_local.dart';
-import 'details_tanle_widget.dart';
+import 'details_table_widget.dart';
 
 class ListTransportWidgetTable extends StatelessWidget {
   const ListTransportWidgetTable({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    ScrollController? verticalController;
-    return GetBuilder<ListTransportsController>(
-      builder: (controller) => Expanded(
-        child: Focus(
-          autofocus: true,
-          onKeyEvent: (FocusNode node, KeyEvent event) =>
-              keyboardListener(event, controller, controller.transports, verticalController),
-          child: HorizontalDataTable(
-            leftHandSideColumnWidth: 55,
-            rightHandSideColumnWidth: (controller.dropEtat == 'Tous'.tr) ? 1555 : 1455,
-            isFixedHeader: true,
-            headerWidgets: _getTitleWidget(context, controller),
-            leftSideItemBuilder: (context, index) => GestureDetector(
-              onTap: () {
-                controller.selectRow(index);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: getColorRow(controller.transports[index]),
-                  border: index == controller.selectIndex
-                      ? const Border(
-                          top: BorderSide(color: Colors.red, width: 2),
-                          right: BorderSide.none,
-                          bottom: BorderSide(color: Colors.red, width: 2),
-                          left: BorderSide(color: Colors.red, width: 2),
-                        )
-                      : null,
-                ),
-                child: _cellText(
-                  controller.transports[index].num.toString(),
-                  55,
-                  _getRowStyle(context, index, controller),
-                  index,
-                  controller,
-                ),
+  Widget build(BuildContext context) => GetBuilder<ListTransportsController>(
+    builder: (controller) => Expanded(
+      child: Focus(
+        focusNode: controller.tableFocusNode,
+        autofocus: true,
+        onKeyEvent: (FocusNode node, KeyEvent event) =>
+            keyboardListener(event, controller, controller.transports, controller.verticalController),
+        child: HorizontalDataTable(
+          leftHandSideColumnWidth: 55,
+          rightHandSideColumnWidth: (controller.dropEtat == 'Tous'.tr) ? 1555 : 1455,
+          isFixedHeader: true,
+          headerWidgets: _getTitleWidget(context, controller),
+          leftSideItemBuilder: (context, index) => GestureDetector(
+            onTap: () {
+              controller.selectRow(index);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: getColorRow(controller.transports[index]),
+                border: index == controller.selectIndex
+                    ? const Border(
+                        top: BorderSide(color: Colors.red, width: 2),
+                        right: BorderSide.none,
+                        bottom: BorderSide(color: Colors.red, width: 2),
+                        left: BorderSide(color: Colors.red, width: 2),
+                      )
+                    : null,
+              ),
+              child: _cellText(
+                controller.transports[index].num.toString(),
+                55,
+                _getRowStyle(context, index, controller),
+                index,
+                controller,
               ),
             ),
-            rightSideItemBuilder: (context, index) => _generateAllColumns(controller, index, context),
-            itemCount: controller.transports.length,
-            rowSeparatorWidget: const Divider(height: 1, color: Colors.grey),
-            leftHandSideColBackgroundColor: Colors.white,
-            rightHandSideColBackgroundColor: Colors.white,
-            onScrollControllerReady: (vc, hc) {
-              verticalController = vc;
-            },
           ),
+          rightSideItemBuilder: (context, index) => _generateAllColumns(controller, index, context),
+          itemCount: controller.transports.length,
+          rowSeparatorWidget: const Divider(height: 1, color: Colors.grey),
+          leftHandSideColBackgroundColor: Colors.white,
+          rightHandSideColBackgroundColor: Colors.white,
+          onScrollControllerReady: (vc, hc) {
+            controller.verticalController = vc;
+          },
         ),
       ),
-    );
-  }
+    ),
+  );
 
-  getColorRow(item) {
+  Color getColorRow(Transport item) {
     switch (item.etat) {
       case 4:
         return AppColor.green.withValues(alpha: 0.25);
@@ -265,7 +263,7 @@ class ListTransportWidgetTable extends StatelessWidget {
 
   Widget _headerText(String label, double width, TextStyle style) => Container(
     width: width,
-    height: 65,
+    height: 60,
     alignment: Alignment.center,
     child: Text(label, style: style, softWrap: true, textAlign: TextAlign.center),
   );
@@ -327,6 +325,7 @@ class ListTransportWidgetTable extends StatelessWidget {
       },
       onDoubleTap: () {
         controller.selectRow(index);
+        controller.getDetails(item: item);
         showDialog(
           context: context,
           builder: (context) => Center(

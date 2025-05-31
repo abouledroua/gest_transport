@@ -68,10 +68,10 @@ class AppData {
     return deviceIdentifier;
   }
 
-  static String getServerDirectory([port = ""]) =>
+  static String getServerDirectory([String port = ""]) =>
       ((_serverIP == "") ? "" : "http${testMode ? "" : "s"}://$_serverIP${port != "" ? ":$port" : ""}/$_www");
 
-  static String getImage(pImage, pType) => "${getServerDirectory()}/IMAGE/$pType/$pImage";
+  static String getImage(String pImage, String pType) => "${getServerDirectory()}/IMAGE/$pType/$pImage";
 
   static Future<String?> getDownloadPath() async {
     Directory? directory;
@@ -115,7 +115,7 @@ class AppData {
     return null;
   }
 
-  static saveIdentifiant({required String cd, required String na, required String ns}) async {
+  static Future<void> saveIdentifiant({required String cd, required String na, required String ns}) async {
     SettingServices sc = Get.find();
     await sc.storage.write(key: 'CD', value: cd);
     await sc.storage.write(key: 'NS', value: ns);
@@ -131,7 +131,7 @@ class AppData {
   //   return Active(na: na, ns: ns, cd: cd, active: active);
   // }
 
-  static mySnackBar({required title, required message, required color, textColor}) {
+  static void mySnackBar({required String title, required String message, required Color color, Color? textColor}) {
     Get.snackbar(
       title,
       message,
@@ -289,7 +289,7 @@ class AppData {
 
   static String extension({required String filename}) => ".${filename.split(".").last}";
 
-  static reparerBDD({required bool showToast}) {
+  static void reparerBDD({required bool showToast}) {
     String serverDir = getServerDirectory();
     var url = "$serverDir/REPARER_BDD.php";
     debugPrint(url);
@@ -353,7 +353,8 @@ class AppData {
       (telNumber1.removeAllWhitespace.isNotEmpty && telNumber2.removeAllWhitespace.isNotEmpty ? "\n" : "") +
       (telNumber2.removeAllWhitespace.isEmpty ? "" : "0${AppData.formatMoney(int.parse(telNumber2))}");
 
-  static String formatMoney(money) =>
+  // ignore: strict_top_level_inference
+  static String formatMoney(var money) =>
       NumberFormat.decimalPattern("uk-UA").format(double.parse((money).toStringAsFixed(2)));
 
   static String getAlphabetNew(int num) {
@@ -435,7 +436,7 @@ class AppData {
     }
   }
 
-  static String system36New(pnum) {
+  static String system36New(int pnum) {
     int num = pnum;
     String reste = "";
     if (num == 0) {
@@ -531,7 +532,7 @@ class AppData {
     }
   }
 
-  static genererid() {
+  static String genererid() {
     String t1 = '';
     int n;
     Random rng;
@@ -554,7 +555,7 @@ class AppData {
     return t;
   }
 
-  static logout({question = true}) {
+  static void logout({bool question = true}) {
     if (question) {
       AwesomeDialog(
         context: Get.context!,
@@ -576,7 +577,7 @@ class AppData {
     }
   }
 
-  static _closeall(bool erase) async {
+  static Future<void> _closeall(bool erase) async {
     if (erase) {
       SettingServices c = Get.find();
       c.sharedPrefs.setBool('LastConnected', false);
@@ -602,9 +603,9 @@ class AppData {
     return true;
   }
 
-  static openPlayStorePgae() {}
+  static void openPlayStorePgae() {}
 
-  static launchSocial(String url, String fallbackUrl) async {
+  static Future<void> launchSocial(String url, String fallbackUrl) async {
     try {
       final Uri uri = Uri.parse(url);
       await launchUrl(uri, mode: LaunchMode.platformDefault);
@@ -614,7 +615,7 @@ class AppData {
     }
   }
 
-  static double getDouble(var m, String column) {
+  static double getDouble(Map m, String column) {
     try {
       return double.parse(m[column]);
     } catch (e) {
@@ -622,7 +623,7 @@ class AppData {
     }
   }
 
-  static int getInt(var m, String column) {
+  static int getInt(Map m, String column) {
     try {
       return int.parse(m[column]);
     } catch (e) {

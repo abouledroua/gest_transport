@@ -13,21 +13,14 @@ class UsersByDevice extends StatelessWidget {
       padding: const EdgeInsets.only(top: AppSizes.appPadding),
       child: Container(
         height: 350,
-        decoration: BoxDecoration(
-          color: AppColor.secondaryColor,
-          borderRadius: BorderRadius.circular(10),
-        ),
+        decoration: BoxDecoration(color: AppColor.secondaryColor, borderRadius: BorderRadius.circular(10)),
         padding: EdgeInsets.all(AppSizes.appPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Users by device',
-              style: TextStyle(
-                color: AppColor.textColor,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
+              style: TextStyle(color: AppColor.textColor, fontSize: 15, fontWeight: FontWeight.w700),
             ),
             Container(
               margin: EdgeInsets.all(AppSizes.appPadding),
@@ -35,7 +28,7 @@ class UsersByDevice extends StatelessWidget {
               height: 230,
               child: CustomPaint(
                 foregroundPainter: RadialPainter(
-                  bgColor: AppColor.textColor.withOpacity(0.1),
+                  bgColor: AppColor.textColor.withValues(alpha: 0.1),
                   lineColor: AppColor.primaryColor,
                   percent: 0.7,
                   width: 18.0,
@@ -43,11 +36,7 @@ class UsersByDevice extends StatelessWidget {
                 child: Center(
                   child: Text(
                     '70%',
-                    style: TextStyle(
-                      color: AppColor.textColor,
-                      fontSize: 36,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(color: AppColor.textColor, fontSize: 36, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -59,45 +48,27 @@ class UsersByDevice extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.circle,
-                        color: AppColor.primaryColor,
-                        size: 10,
-                      ),
-                      SizedBox(
-                        width: AppSizes.appPadding / 2,
-                      ),
+                      Icon(Icons.circle, color: AppColor.primaryColor, size: 10),
+                      SizedBox(width: AppSizes.appPadding / 2),
                       Text(
                         'Desktop',
-                        style: TextStyle(
-                          color: AppColor.textColor.withOpacity(0.5),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                        style: TextStyle(color: AppColor.textColor.withValues(alpha: 0.5), fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                   Row(
                     children: [
-                      Icon(
-                        Icons.circle,
-                        color: AppColor.textColor.withOpacity(0.2),
-                        size: 10,
-                      ),
-                      SizedBox(
-                        width: AppSizes.appPadding / 2,
-                      ),
+                      Icon(Icons.circle, color: AppColor.textColor.withValues(alpha:0.2), size: 10),
+                      SizedBox(width: AppSizes.appPadding / 2),
                       Text(
                         'Mobile',
-                        style: TextStyle(
-                          color: AppColor.textColor.withOpacity(0.5),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                        style: TextStyle(color: AppColor.textColor.withValues(alpha:0.5), fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

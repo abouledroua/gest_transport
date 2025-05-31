@@ -112,6 +112,7 @@ class FilterDrawerWidget extends StatelessWidget {
                             String myDate = "${selectDate.year}-${selectDate.month}-${selectDate.day}";
                             controller.updateDate(myDate);
                           }
+                          controller.tableFocusNode.requestFocus();
                         },
                         onClear: () {
                           controller.dateController.text = "";
@@ -202,7 +203,7 @@ class FilterDrawerWidget extends StatelessWidget {
     );
   }
 
-  myTextField({
+  TextField myTextField({
     required TextEditingController controller,
     required BuildContext context,
     Function()? onClear,
@@ -229,7 +230,7 @@ class FilterDrawerWidget extends StatelessWidget {
     ),
   );
 
-  myDropDown({
+  SizedBox myDropDown({
     required String label,
     required String? value,
     required List<DropdownMenuItem<dynamic>>? items,

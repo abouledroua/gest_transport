@@ -46,7 +46,7 @@ class ListTransportPage extends StatelessWidget {
     );
   }
 
-  filterChips(ListTransportsController controller) {
+  SingleChildRenderObjectWidget filterChips(ListTransportsController controller) {
     List<Widget> chips = [];
 
     if (controller.dropExercice != "Tous".tr) {
@@ -131,7 +131,7 @@ class ListTransportPage extends StatelessWidget {
     );
   }
 
-  actionButton(BuildContext context, controller) => LayoutBuilder(
+  LayoutBuilder actionButton(BuildContext context, ListTransportsController controller) => LayoutBuilder(
     builder: (context, constraints) => Row(
       children: [
         if (!AppSizes.showSidebar)
@@ -152,7 +152,7 @@ class ListTransportPage extends StatelessWidget {
           IconButton(
             tooltip: "Imprimer".tr,
             onPressed: () {
-              controller.getList(showMessage: true);
+              controller.getDetails(item: controller.itemSelected!, priniting: true);
             },
             icon: const Icon(Icons.print_outlined, color: AppColor.purple),
           ),
@@ -225,7 +225,7 @@ class ListTransportPage extends StatelessWidget {
     ),
   );
 
-  filterWidget(BuildContext context, ListTransportsController controller) => Row(
+  Row filterWidget(BuildContext context, ListTransportsController controller) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
       const SizedBox(width: AppSizes.appPadding),
@@ -337,7 +337,7 @@ class ListTransportPage extends StatelessWidget {
     ],
   );
 
-  myTextField({
+  TextField myTextField({
     required TextEditingController controller,
     required BuildContext context,
     Function()? onClear,
@@ -360,7 +360,7 @@ class ListTransportPage extends StatelessWidget {
     ),
   );
 
-  myDropDown({
+  SizedBox myDropDown({
     required String label,
     required String? value,
     required List<DropdownMenuItem<dynamic>>? items,

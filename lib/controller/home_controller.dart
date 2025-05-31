@@ -7,15 +7,15 @@ class HomeController extends GetxController {
   bool _versionDemo = true;
   int _index = 0;
 
-  get isVersionDemo => _versionDemo;
-  get currentIndex => _index;
+  bool get isVersionDemo => _versionDemo;
+  int get currentIndex => _index;
 
-  setVersionDemo(bool value) {
+  void setVersionDemo(bool value) {
     _versionDemo = value;
     update();
   }
 
-  setIndex({required int newIndex, firstGo = false}) {
+  void setIndex({required int newIndex, firstGo = false}) {
     _index = newIndex;
     update();
     AppRoute.goToPage(index: _index, firstGo: firstGo);

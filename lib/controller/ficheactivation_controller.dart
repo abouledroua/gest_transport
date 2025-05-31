@@ -35,17 +35,17 @@ class FicheActivationController extends GetxController {
       txtIdApp3,
       txtIdApp4;
 
-  updateSaisiToken() {
+  void updateSaisiToken() {
     saisieToken = !saisieToken;
     update();
   }
 
-  updateValider({required bool newValue}) {
+  void updateValider({required bool newValue}) {
     valider = newValue;
     update();
   }
 
-  updateLoading({newloading, newerror}) {
+  void updateLoading({required bool newloading, required bool newerror}) {
     loading = newloading;
     error = newerror;
     update();
@@ -53,24 +53,30 @@ class FicheActivationController extends GetxController {
 
   Future<bool> onWillPop() async =>
       (await showDialog(
-          context: Get.context!,
-          builder: (context) => AlertDialog(
-                  title: Row(children: [
-                    Icon(Icons.cancel_outlined, color: AppColor.red),
-                    const Padding(padding: EdgeInsets.only(left: 8.0), child: Text('Annuler ?'))
-                  ]),
-                  content: const Text("Voulez-vous vraiment annuler tous les changements !!!"),
-                  actions: <Widget>[
-                    TextButton(
-                        onPressed: () => Get.back(result: false),
-                        child: Text('non'.tr, style: TextStyle(color: AppColor.red))),
-                    TextButton(
-                        onPressed: () => Get.back(result: true),
-                        child: Text('oui'.tr, style: TextStyle(color: AppColor.green)))
-                  ]))) ??
+        context: Get.context!,
+        builder: (context) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.cancel_outlined, color: AppColor.red),
+              const Padding(padding: EdgeInsets.only(left: 8.0), child: Text('Annuler ?')),
+            ],
+          ),
+          content: const Text("Voulez-vous vraiment annuler tous les changements !!!"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Get.back(result: false),
+              child: Text('non'.tr, style: TextStyle(color: AppColor.red)),
+            ),
+            TextButton(
+              onPressed: () => Get.back(result: true),
+              child: Text('oui'.tr, style: TextStyle(color: AppColor.green)),
+            ),
+          ],
+        ),
+      )) ??
       false;
 
-  saveClient() {
+  void saveClient() {
     updateValider(newValue: true);
     txtNact1.text = txtNact1.text.removeAllWhitespace;
     txtNact2.text = txtNact2.text.removeAllWhitespace;
@@ -102,7 +108,10 @@ class FicheActivationController extends GetxController {
       debugPrint("Veuillez saisir les champs obligatoires !!!!");
       updateValider(newValue: false);
       AppData.mySnackBar(
-          color: AppColor.red, title: 'Fiche Activation', message: "Veuillez remplir les champs oligatoire !!!!");
+        color: AppColor.red,
+        title: 'Fiche Activation',
+        message: "Veuillez remplir les champs oligatoire !!!!",
+      );
     } else {
       if (saisieToken) {
         if (txtTokken.text == "AD3#Y60_IG") {
@@ -120,7 +129,7 @@ class FicheActivationController extends GetxController {
     }
   }
 
-  verifierNumCD() {
+  void verifierNumCD() {
     isNumCDValid = false;
     valNumCD = (txtNumCD.text.removeAllWhitespace.length < 7);
     if (valNumCD) {
@@ -141,26 +150,30 @@ class FicheActivationController extends GetxController {
     }
   }
 
-  genererNact() {
+  String genererNact() {
     try {
       String t1 = txtIdApp1.text;
       String t2 = txtIdApp2.text;
       String t3 = txtIdApp3.text;
       String t4 = txtIdApp4.text;
 
-      String sn1 = AppData.system36New(AppData.getNumber(t2.substring(0, 1))) +
+      String sn1 =
+          AppData.system36New(AppData.getNumber(t2.substring(0, 1))) +
           AppData.system36New(AppData.getNumber(t2.substring(3, 4))) +
           AppData.system36New(AppData.getNumber(t2.substring(1, 2))) +
           AppData.system36New(AppData.getNumber(t2.substring(2, 3)));
-      String sn2 = AppData.system36New(AppData.getNumber(t3.substring(2, 3))) +
+      String sn2 =
+          AppData.system36New(AppData.getNumber(t3.substring(2, 3))) +
           AppData.system36New(AppData.getNumber(t3.substring(0, 1))) +
           AppData.system36New(AppData.getNumber(t3.substring(1, 2))) +
           AppData.system36New(AppData.getNumber(t3.substring(3, 4)));
-      String sn3 = AppData.system36New(AppData.getNumber(t1.substring(1, 2))) +
+      String sn3 =
+          AppData.system36New(AppData.getNumber(t1.substring(1, 2))) +
           AppData.system36New(AppData.getNumber(t1.substring(2, 3))) +
           AppData.system36New(AppData.getNumber(t1.substring(3, 4))) +
           AppData.system36New(AppData.getNumber(t1.substring(0, 1)));
-      String sn4 = AppData.system36New(AppData.getNumber(t4.substring(1, 2))) +
+      String sn4 =
+          AppData.system36New(AppData.getNumber(t4.substring(1, 2))) +
           AppData.system36New(AppData.getNumber(t4.substring(0, 1))) +
           AppData.system36New(AppData.getNumber(t4.substring(2, 3))) +
           AppData.system36New(AppData.getNumber(t4.substring(3, 4)));
@@ -171,46 +184,61 @@ class FicheActivationController extends GetxController {
     }
   }
 
-  activerDevice({required String cd, required String ns, required String na}) async {
+  Future<void> activerDevice({required String cd, required String ns, required String na}) async {
     String serverDir = AppData.getServerDirectory();
     var url = "$serverDir/INSERT_ACTIVATION.php";
     debugPrint(url);
     AppData.saveIdentifiant(ns: ns, na: na, cd: cd);
     Uri myUri = Uri.parse(url);
-    await http.post(myUri, body: {"BDD": AppData.dossier, "NS": ns, "NA": na}).then((response) async {
-      if (response.statusCode == 200) {
-        var responsebody = response.body;
-        debugPrint("Activation Response=$responsebody");
-        if (responsebody != "0") {
-          HomeController controller = Get.find();
-          controller.setVersionDemo(false);
-          Get.back(result: "success");
-        } else {
+    await http
+        .post(myUri, body: {"BDD": AppData.dossier, "NS": ns, "NA": na})
+        .then((response) async {
+          if (response.statusCode == 200) {
+            var responsebody = response.body;
+            debugPrint("Activation Response=$responsebody");
+            if (responsebody != "0") {
+              HomeController controller = Get.find();
+              controller.setVersionDemo(false);
+              Get.back(result: "success");
+            } else {
+              updateValider(newValue: false);
+              AppData.mySnackBar(
+                title: 'Fiche Activation',
+                message: "Probleme lors de l'ajout !!!",
+                color: AppColor.red,
+              );
+            }
+          } else {
+            updateValider(newValue: false);
+            AppData.mySnackBar(
+              title: 'Fiche Activation',
+              message: "Probleme de Connexion avec le serveur !!!",
+              color: AppColor.red,
+            );
+          }
+        })
+        .catchError((error) {
+          debugPrint("erreur insert Activation: $error");
           updateValider(newValue: false);
-          AppData.mySnackBar(title: 'Fiche Activation', message: "Probleme lors de l'ajout !!!", color: AppColor.red);
-        }
-      } else {
-        updateValider(newValue: false);
-        AppData.mySnackBar(
-            title: 'Fiche Activation', message: "Probleme de Connexion avec le serveur !!!", color: AppColor.red);
-      }
-    }).catchError((error) {
-      debugPrint("erreur insert Activation: $error");
-      updateValider(newValue: false);
-      AppData.mySnackBar(
-          title: 'Fiche Activation', message: "Probleme de Connexion avec le serveur !!!", color: AppColor.red);
-    });
+          AppData.mySnackBar(
+            title: 'Fiche Activation',
+            message: "Probleme de Connexion avec le serveur !!!",
+            color: AppColor.red,
+          );
+        });
   }
 
-  verifierNact() async {
+  Future<void> verifierNact() async {
     updateValider(newValue: true);
     String gNact = genererNact();
-    String myNact = txtNact1.text.toUpperCase() +
+    String myNact =
+        txtNact1.text.toUpperCase() +
         txtNact2.text.toUpperCase() +
         txtNact3.text.toUpperCase() +
         txtNact4.text.toUpperCase();
     if (gNact == myNact && gNact.isNotEmpty) {
-      String nid = txtIdApp1.text.toUpperCase() +
+      String nid =
+          txtIdApp1.text.toUpperCase() +
           txtIdApp2.text.toUpperCase() +
           txtIdApp3.text.toUpperCase() +
           txtIdApp4.text.toUpperCase();
@@ -228,8 +256,8 @@ class FicheActivationController extends GetxController {
     super.onInit();
   }
 
-  init() {
-    AppSizes.setSizeScreen(Get.context);
+  void init() {
+    AppSizes.setSizeScreen(Get.context!);
     isNumCDValid = false;
     focusNumCD = FocusNode();
     focusNact1 = FocusNode();
@@ -249,7 +277,7 @@ class FicheActivationController extends GetxController {
     txtIdApp4 = TextEditingController(text: '  ');
   }
 
-  genererIdentifant() async {
+  Future<void> genererIdentifant() async {
     if (mobile.isEmpty) {
       mobile = await AppData.getAndroidId();
     }
