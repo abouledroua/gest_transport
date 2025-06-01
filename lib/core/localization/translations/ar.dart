@@ -72,6 +72,7 @@ Map<String, String> arTr() => {
   "Réf": "المرجع",
   "Heure": "الساعة",
   "Client": "الزبون",
+  "choisir_client": "االرجاء اختيار الزبون",
   "Fournisseur": "المورد",
   "Poste": "الجهاز",
   "Produit": "السلعة",
@@ -91,4 +92,6 @@ Map<String, String> arTr() => {
   'Montant Transport Externe': "مبلغ النقل الخارجي",
   "Type": "النوع",
   "Developper": "برنامج مطور من طرف بولدروع عمر - 333 750 0778",
+  "Menu": "قائمة",
+  "Fiche_Transport": "بطاقة النقل",
 };

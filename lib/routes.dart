@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'core/constant/routes.dart';
 import 'view/screen/dashboard_ai.dart';
 import 'view/screen/ficheimpression.dart';
+import 'view/screen/fichetransport.dart';
 import 'view/screen/list_transport_page.dart';
 import 'view/screen/login.dart';
 import 'view/screen/privacy_policy.dart';
@@ -17,7 +18,7 @@ Map<String, Widget Function(BuildContext)> routes = {
   // AppRoute.ficheDonnee: (context) => const FicheDonnee(),
   // AppRoute.fichePersonne: (context) => const FichePersonne(),
   // AppRoute.ficheProduit: (context) => const FicheProduit(),
-  // AppRoute.ficheFacture: (context) => const FicheFacture(),
+  AppRoute.ficheTransport: (context) => const FicheTransport(),
   // AppRoute.detailsPersonne: (context) => const DetailsPersonneView(),
   // AppRoute.detailsProduit: (context) => const DetailsProduitView(),
   AppRoute.listTransport: (context) => const ListTransportPage(),

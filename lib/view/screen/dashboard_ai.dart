@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../widgets/my_header.dart';
 import 'myscreen.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -8,7 +9,6 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MyScreen(
-    title: "dashboard".tr,
     child: Expanded(
       child: ListView(
         primary: false,
@@ -21,7 +21,7 @@ class DashboardPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Dashboard Overview', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                MyHeaderWidget(title: 'dashboard'.tr),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

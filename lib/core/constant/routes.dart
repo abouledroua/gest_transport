@@ -11,15 +11,14 @@ class AppRoute {
   static const String impression = "/Impression";
 
   static const String listTransport = "/listTransport";
+  static const String ficheTransport = "/FicheTransport";
+
   static const String fichePersonne = "/FichePersonne";
   static const String detailsPersonne = "/DetailsPersonne";
 
   static const String listProduit = "/ListProduit";
   static const String ficheProduit = "/FicheProduit";
   static const String detailsProduit = "/DetailsProduit";
-
-  static const String listFactures = "/ListFacture";
-  static const String ficheFacture = "/FicheFactures";
 
   static const String listDonnee = "/ListDonnee";
   static const String ficheDonnee = "/FicheDonnee";

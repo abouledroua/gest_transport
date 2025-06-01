@@ -161,7 +161,7 @@ class FilterDrawerWidget extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: Visibility(
-                        visible: controller.loadingExercice.value,
+                        visible: controller.loadingDestination.value,
                         replacement: myDropDown(
                           label: 'Destination'.tr,
                           value: controller.dropDestination,

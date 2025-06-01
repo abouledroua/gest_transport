@@ -72,6 +72,7 @@ Map<String, String> frTr() => {
   "Réf": "Réf",
   "Heure": "Heure",
   "Client": "Client",
+  "choisir_client": "Veuillez choisir un client",
   "Fournisseur": "Fournisseur",
   "Poste": "Poste",
   "Produit": "Produit",
@@ -92,4 +93,6 @@ Map<String, String> frTr() => {
   'Montant Transport Externe': "Montant Transport Externe",
   "Type": "Type",
   "Developper": "Logiciel Développé Par Bouledroua Amor - 0778 750 333",
+  "Menu": "Menu",
+  "Fiche_Transport": "Fiche Transport",
 };

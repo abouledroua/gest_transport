@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controller/fichetransport_controller.dart';
 import '../../controller/listtransport_controller.dart';
 import '../../core/constant/color.dart';
+import '../../core/constant/routes.dart';
 import '../../core/constant/sizes.dart';
 import '../../core/mydivider.dart';
 import '../widgets/list_transport/emptylisttransport.dart';
 import '../widgets/list_transport/filter_drawer_widget.dart';
 import '../widgets/list_transport/list_transport_table_widget.dart';
 import '../widgets/loadingbarwidget.dart';
+import '../widgets/my_header.dart';
 import 'myscreen.dart';
 
 class ListTransportPage extends StatelessWidget {
@@ -21,7 +24,6 @@ class ListTransportPage extends StatelessWidget {
     }
     Get.put(ListTransportsController());
     return MyScreen(
-      title: "Transport".tr,
       endDrawer: GetBuilder<ListTransportsController>(
         builder: (controller) => FilterDrawerWidget(controller: controller, parentContext: context),
       ),
@@ -30,8 +32,7 @@ class ListTransportPage extends StatelessWidget {
           builder: (controller) => Obx(
             () => Column(
               children: [
-                const SizedBox(height: AppSizes.appPadding),
-                actionButton(context, controller),
+                MyHeaderWidget(title: 'List_Transports'.tr, action: actions(controller)),
                 if (!controller.loading.value) filterChips(controller),
                 if (!controller.loading.value && !controller.loadingFilter.value && controller.filter.value)
                   filterWidget(context, controller),
@@ -131,99 +132,88 @@ class ListTransportPage extends StatelessWidget {
     );
   }
 
-  LayoutBuilder actionButton(BuildContext context, ListTransportsController controller) => LayoutBuilder(
-    builder: (context, constraints) => Row(
-      children: [
-        if (!AppSizes.showSidebar)
-          Builder(
-            builder: (context) => IconButton(
-              icon: Icon(Icons.filter_list, color: AppColor.black),
-              tooltip: "Filtrer".tr,
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+  List<StatelessWidget> actions(ListTransportsController controller) => [
+    if (controller.selectIndex > -1 && !controller.loading.value)
+      IconButton(
+        tooltip: "Imprimer".tr,
+        onPressed: () {
+          controller.getDetails(item: controller.itemSelected!, priniting: true);
+        },
+        icon: const Icon(Icons.print_outlined, color: AppColor.purple),
+      ),
+    if (controller.selectIndex > -1 && !controller.loading.value) const MyDivider(),
+    if (controller.selectIndex > -1 && !controller.loading.value)
+      IconButton(
+        tooltip: "Archiver".tr,
+        onPressed: () {
+          controller.getList(showMessage: true);
+        },
+        icon: const Icon(Icons.archive_outlined, color: AppColor.brown),
+      ),
+    if (controller.selectIndex > -1 && !controller.loading.value)
+      IconButton(
+        tooltip: "Supprimer".tr,
+        onPressed: () {
+          controller.getList(showMessage: true);
+        },
+        icon: Icon(Icons.delete_forever, color: AppColor.red),
+      ),
+    if (controller.selectIndex > -1 && !controller.loading.value)
+      IconButton(
+        tooltip: "Modifier".tr,
+        onPressed: () {
+          controller.getList(showMessage: true);
+        },
+        icon: const Icon(Icons.edit_document, color: AppColor.blue2),
+      ),
+    if (!controller.loading.value)
+      IconButton(
+        tooltip: "Ajouter".tr,
+        onPressed: () {
+          if (Get.isRegistered<FicheTransportController>()) {
+            Get.delete<FicheTransportController>();
+          }
+          Get.toNamed(AppRoute.ficheTransport, arguments: {})?.then((value) {
+            if (value == "success") {
+              controller.getList(showMessage: true);
+            }
+          });
+        },
+        icon: const Icon(Icons.add_circle_outline_sharp, color: AppColor.green2),
+      ),
+    if (!controller.loading.value) const MyDivider(),
+    if (!controller.loading.value)
+      IconButton(
+        tooltip: "Imprimer la Liste".tr,
+        onPressed: () {
+          controller.getList(showMessage: true);
+        },
+        icon: const Icon(Icons.list_alt_outlined, color: AppColor.black),
+      ),
+    if (!controller.loading.value)
+      IconButton(
+        tooltip: "Actualiser".tr,
+        onPressed: () {
+          controller.getList(showMessage: true);
+        },
+        icon: const Icon(Icons.refresh),
+      ),
+    if (!controller.loading.value)
+      Builder(
+        builder: (context) {
+          return IconButton(
+            tooltip: controller.filter.value ? "Annuler Filtre".tr : "Filtrer".tr,
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+            },
+            icon: Icon(
+              controller.filter.value ? Icons.filter_alt_off_rounded : Icons.filter_alt_rounded,
+              color: controller.filter.value ? AppColor.grey : AppColor.amber,
             ),
-          ),
-        Expanded(
-          child: Text('List_Transports'.tr, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
-        ),
-
-        if (controller.selectIndex > -1 && !controller.loading.value)
-          IconButton(
-            tooltip: "Imprimer".tr,
-            onPressed: () {
-              controller.getDetails(item: controller.itemSelected!, priniting: true);
-            },
-            icon: const Icon(Icons.print_outlined, color: AppColor.purple),
-          ),
-        if (controller.selectIndex > -1 && !controller.loading.value) const MyDivider(),
-        if (controller.selectIndex > -1 && !controller.loading.value)
-          IconButton(
-            tooltip: "Archiver".tr,
-            onPressed: () {
-              controller.getList(showMessage: true);
-            },
-            icon: const Icon(Icons.archive_outlined, color: AppColor.brown),
-          ),
-        if (controller.selectIndex > -1 && !controller.loading.value)
-          IconButton(
-            tooltip: "Supprimer".tr,
-            onPressed: () {
-              controller.getList(showMessage: true);
-            },
-            icon: Icon(Icons.delete_forever, color: AppColor.red),
-          ),
-        if (controller.selectIndex > -1 && !controller.loading.value)
-          IconButton(
-            tooltip: "Modifier".tr,
-            onPressed: () {
-              controller.getList(showMessage: true);
-            },
-            icon: const Icon(Icons.edit_document, color: AppColor.blue2),
-          ),
-        if (!controller.loading.value)
-          IconButton(
-            tooltip: "Ajouter".tr,
-            onPressed: () {
-              controller.getList(showMessage: true);
-            },
-            icon: const Icon(Icons.add_circle_outline_sharp, color: AppColor.green2),
-          ),
-        if (!controller.loading.value) const MyDivider(),
-        if (!controller.loading.value)
-          IconButton(
-            tooltip: "Imprimer la Liste".tr,
-            onPressed: () {
-              controller.getList(showMessage: true);
-            },
-            icon: const Icon(Icons.list_alt_outlined, color: AppColor.black),
-          ),
-        if (!controller.loading.value)
-          IconButton(
-            tooltip: "Actualiser".tr,
-            onPressed: () {
-              controller.getList(showMessage: true);
-            },
-            icon: const Icon(Icons.refresh),
-          ),
-        if (!controller.loading.value)
-          Builder(
-            builder: (context) {
-              return IconButton(
-                tooltip: controller.filter.value ? "Annuler Filtre".tr : "Filtrer".tr,
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                },
-                icon: Icon(
-                  controller.filter.value ? Icons.filter_alt_off_rounded : Icons.filter_alt_rounded,
-                  color: controller.filter.value ? AppColor.grey : AppColor.amber,
-                ),
-              );
-            },
-          ),
-      ],
-    ),
-  );
+          );
+        },
+      ),
+  ];
 
   Row filterWidget(BuildContext context, ListTransportsController controller) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

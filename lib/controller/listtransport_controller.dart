@@ -251,8 +251,8 @@ class ListTransportsController extends GetxController {
             destinDes.add(m['DESTINATION']);
           }
           myDropDestinationList = destinDes.map((e) => myDropMenuItem(e)).toList();
-          if (dropDestination != "Tous".tr && !destinDes.contains(dropDestination)) {
-            dropDestination = 'Tous'.tr;
+          if (dropDestination != "Tous Les Destination".tr && !destinDes.contains(dropDestination)) {
+            dropDestination = 'Tous Les Destination'.tr;
           }
           updateBooleans(newloading: false, newerror: false, type: 2);
         } else {
@@ -654,8 +654,6 @@ class ListTransportsController extends GetxController {
             pageFormat: pageFormat,
             theme: theme,
             margin: pw.EdgeInsets.all(14),
-            footer: (context) =>
-                pw.Text((context.pagesCount < 2) ? '' : 'Page ${context.pageNumber} / ${context.pagesCount}'),
             build: (context) => getBonTransport(item, data, context, phoneIcon),
           ),
         );

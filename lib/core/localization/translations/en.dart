@@ -72,6 +72,7 @@ Map<String, String> enTr() => {
   "Réf": "Réf",
   "Heure": "Time",
   "Client": "Client",
+  "choisir_client": "Please choose a client",
   "Fournisseur": "Supplier",
   "Poste": "Poste",
   "Produit": "Product",
@@ -92,4 +93,6 @@ Map<String, String> enTr() => {
   'Montant Transport Externe': "External Transport Amount",
   "Type": "Type",
   "Developper": "Software Developed By Bouledroua Amor - 0778 750 333",
+  "Menu": "Menu",
+  "Fiche_Transport": "Transport Sheet",
 };

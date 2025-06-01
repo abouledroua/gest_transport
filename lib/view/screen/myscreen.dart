@@ -5,8 +5,7 @@ import '../widgets/my_menu_bar.dart';
 import 'mywidget.dart';
 
 class MyScreen extends StatelessWidget {
-  const MyScreen({super.key, required this.child, required this.title, this.endDrawer});
-  final String title;
+  const MyScreen({super.key, required this.child, this.endDrawer});
   final Widget child;
   final Widget? endDrawer;
 
@@ -17,12 +16,7 @@ class MyScreen extends StatelessWidget {
       return MyWidget(
         endDrawer: endDrawer,
         drawer: AppSizes.showSidebar ? null : Drawer(child: MyMenuBar()),
-        child: Row(
-          children: [
-            // if (AppSizes.showSidebar) MyMenuBar(),
-            child,
-          ],
-        ),
+        child: child,
       );
     },
   );
