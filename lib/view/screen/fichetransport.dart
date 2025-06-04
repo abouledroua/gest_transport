@@ -53,466 +53,484 @@ class FicheTransport extends StatelessWidget {
     FicheTransportController controller,
     BuildContext context,
   ) => GetBuilder<MyUserController>(
-    builder: (userController) => ListView(
-      primary: false,
-      shrinkWrap: true,
-      children: [
-        Center(
-          // Add this Center widget
-          child: Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(border: Border.all()),
-            constraints: BoxConstraints(maxWidth: min(AppSizes.widthScreen, 900)),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 5,
-                  child: myDateTimeField(
-                    controller: controller.txtDate,
-                    label: "Date".tr,
-                    type: 1,
-                    onTap: (value) {
-                      controller.updateDate(value);
-                    },
-                    onTapClear: () {
-                      controller.updateDate("");
-                    },
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 4,
-                  child: myDateTimeField(
-                    controller: controller.txtTime,
-                    label: "Heure".tr,
-                    type: 2,
-                    onTap: (value) {
-                      controller.updateTime(value);
-                    },
-                    onTapClear: () {
-                      controller.updateTime("");
-                    },
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 16,
-                  child: EditTextFicheTransport(
-                    text: 'Client'.tr,
-                    nbline: 1,
-                    error: controller.valClient,
-                    focusNode: controller.focusClient,
-                    readOnly: true,
-                    onTapClear: () {
-                      controller.updateClientValue(pIdClient: 0, pNomClient: '');
-                    },
-                    onTapSearch: () {
-                      // Get.toNamed(
-                      //   AppRoute.listPersonne,
-                      //   arguments: {'SELECT': true, 'TYPE': (type < 3) || (type == 7) ? 2 : 1},
-                      // )?.then((value) {
-                      //   if (value != null) {
-                      //     controller.updateClientValue(pIdClient: value.id, pNomClient: value.nom);
-                      //   }
-                      // });
-                    },
-                    icon: Icons.multitrack_audio_rounded,
-                    keyboardType: TextInputType.text,
-                    mycontroller: controller.txtClient,
-                  ),
-                ),
-                SizedBox(width: 10),
-
-                Expanded(
-                  flex: 10,
-                  child: Visibility(
-                    visible: controller.loadingDestination.value,
-                    replacement: myDropDown(
-                      label: 'Destination'.tr,
-                      value: controller.dropDestination,
-                      items: controller.myDropDestinationList,
-                      onChanged: (value) {
-                        controller.updateDropDestinationValue(value);
+    builder: (userController) => Obx(
+      () => ListView(
+        primary: false,
+        shrinkWrap: true,
+        children: [
+          Center(
+            // Add this Center widget
+            child: Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(border: Border.all()),
+              constraints: BoxConstraints(maxWidth: min(AppSizes.widthScreen, 900)),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: myDateTimeField(
+                      controller: controller.txtDate,
+                      label: "Date".tr,
+                      type: 1,
+                      onTap: (value) {
+                        controller.updateDate(value);
                       },
-                      hint: "Choisir la Destination".tr,
+                      onTapClear: () {
+                        controller.updateDate("");
+                      },
                     ),
-                    child: const Center(child: CircularProgressIndicator.adaptive()),
                   ),
-                ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 4,
+                    child: myDateTimeField(
+                      controller: controller.txtTime,
+                      label: "Heure".tr,
+                      type: 2,
+                      onTap: (value) {
+                        controller.updateTime(value);
+                      },
+                      onTapClear: () {
+                        controller.updateTime("");
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 16,
+                    child: EditTextFicheTransport(
+                      text: 'Client'.tr,
+                      nbline: 1,
+                      error: controller.valClient,
+                      focusNode: controller.focusClient,
+                      readOnly: true,
+                      onTapClear: () {
+                        controller.updateClientValue(pIdClient: 0, pNomClient: '');
+                      },
+                      onTapSearch: () {
+                        // Get.toNamed(
+                        //   AppRoute.listPersonne,
+                        //   arguments: {'SELECT': true, 'TYPE': (type < 3) || (type == 7) ? 2 : 1},
+                        // )?.then((value) {
+                        //   if (value != null) {
+                        //     controller.updateClientValue(pIdClient: value.id, pNomClient: value.nom);
+                        //   }
+                        // });
+                      },
+                      icon: Icons.multitrack_audio_rounded,
+                      keyboardType: TextInputType.text,
+                      mycontroller: controller.txtClient,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 8,
+                    child: Visibility(
+                      visible: controller.loadingDestination.value,
+                      replacement: myDropDown(
+                        label: 'Destination'.tr,
+                        value: controller.dropDestination,
+                        items: controller.myDropDestinationList,
+                        onChanged: (value) {
+                          controller.updateDropDestinationValue(value);
+                        },
+                        hint: "Choisir la Destination".tr,
+                      ),
+                      child: const Center(child: CircularProgressIndicator.adaptive()),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 16,
+                    child: Visibility(
+                      visible: controller.loadingDestination.value,
+                      replacement: myDropDown(
+                        label: 'Transporteur'.tr,
+                        value: controller.dropDestination,
+                        items: controller.myDropDestinationList,
+                        onChanged: (value) {
+                          controller.updateDropDestinationValue(value);
+                        },
+                        hint: "Choisir le Transporteur".tr,
+                      ),
+                      child: const Center(child: CircularProgressIndicator.adaptive()),
+                    ),
+                  ),
 
-                // SizedBox(width: 10),
-                // SizedBox(
-                //   width: 200,
-                //   child: EditTextFicheTransport(
-                //     text: 'Destination'.tr,
-                //     nbline: 1,
-                //     error: controller.valDestination,
-                //     focusNode: controller.focusDestination,
-                //     readOnly: true,
-                //     onTapClear: () {
-                //       controller.updateDestinationValue(pIdDestination: 0, pNomDestination: '');
-                //     },
-                //     onTapSearch: () {
-                //       // Get.toNamed(
-                //       //   AppRoute.listPersonne,
-                //       //   arguments: {'SELECT': true, 'TYPE': (type < 3) || (type == 7) ? 2 : 1},
-                //       // )?.then((value) {
-                //       //   if (value != null) {
-                //       //     controller.updateClientValue(pIdClient: value.id, pNomClient: value.nom);
-                //       //   }
-                //       // });
-                //     },
-                //     icon: Icons.multitrack_audio_rounded,
-                //     keyboardType: TextInputType.text,
-                //     mycontroller: controller.txtDestination,
-                //   ),
-                // ),
-              ],
+                  // SizedBox(width: 10),
+                  // SizedBox(
+                  //   width: 200,
+                  //   child: EditTextFicheTransport(
+                  //     text: 'Destination'.tr,
+                  //     nbline: 1,
+                  //     error: controller.valDestination,
+                  //     focusNode: controller.focusDestination,
+                  //     readOnly: true,
+                  //     onTapClear: () {
+                  //       controller.updateDestinationValue(pIdDestination: 0, pNomDestination: '');
+                  //     },
+                  //     onTapSearch: () {
+                  //       // Get.toNamed(
+                  //       //   AppRoute.listPersonne,
+                  //       //   arguments: {'SELECT': true, 'TYPE': (type < 3) || (type == 7) ? 2 : 1},
+                  //       // )?.then((value) {
+                  //       //   if (value != null) {
+                  //       //     controller.updateClientValue(pIdClient: value.id, pNomClient: value.nom);
+                  //       //   }
+                  //       // });
+                  //     },
+                  //     icon: Icons.multitrack_audio_rounded,
+                  //     keyboardType: TextInputType.text,
+                  //     mycontroller: controller.txtDestination,
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
           ),
-        ),
 
-        // const SizedBox(height: 10),
-        //       const SizedBox(height: 15),
-        //       Visibility(
-        //         visible: controller.loadingMagasin,
-        //         replacement: Visibility(
-        //           visible: controller.errorMagasin || controller.nbMagasin > 1,
-        //           child: EditTextFicheTransport(
-        //             text: 'Magasin',
-        //             nbline: 1,
-        //             check: controller.valMagasin,
-        //             focusNode: controller.focusMagasin,
-        //             readOnly: true,
-        //             onTapClear: () {
-        //               controller.updateMagasinValue(pIdMagsin: 0, pNomMagsin: '');
-        //             },
-        //             onTapSearch: () {
-        //               Get.toNamed(AppRoute.listDonnee, arguments: {'TYPE': 7})?.then((value) {
-        //                 if (value != null) {
-        //                   Donnee magasin = value;
-        //                   controller.updateMagasinValue(pIdMagsin: magasin.id, pNomMagsin: magasin.designation);
-        //                 }
-        //               });
-        //             },
-        //             icon: Icons.multitrack_audio_rounded,
-        //             keyboardType: TextInputType.text,
-        //             mycontroller: controller.txtMagasin,
-        //           ),
-        //         ),
-        //         child: const LoadingWidget(),
-        //       ),
-        //       const SizedBox(height: 15),
-        //
-        //
-        //       // if (type == 5)
-        //       //   Center(
-        //       //       child: Container(
-        //       //           constraints: BoxConstraints(maxWidth: AppSizes.widthScreen / 2),
-        //       //           child: myCheckBox(
-        //       //               context: context,
-        //       //               text: 'Sans Facture',
-        //       //               color: AppColor.purple.withValues(alpha: 0.5),
-        //       //               valCheck: controller.valCheckSansFacture,
-        //       //               onTap: (value) {
-        //       //                 controller.updateCheckSansFacture(value);
-        //       //               }))),
-        //       if (type == 5) const SizedBox(height: 10),
-        //       if (type == 5)
-        //         EditTextFicheTransport(
-        //           text: 'Transporteur',
-        //           nbline: 1,
-        //           readOnly: true,
-        //           onTapClear: () {
-        //             controller.updateTransporteurValue(pIdTransporteur: 0, pNomTransporteur: '');
-        //           },
-        //           onTapSearch: () {
-        //             Get.toNamed(AppRoute.listPersonne, arguments: {'SELECT': true, 'TYPE': 3})?.then((value) {
-        //               if (value != null) {
-        //                 controller.updateTransporteurValue(pIdTransporteur: value.id, pNomTransporteur: value.nom);
-        //               }
-        //             });
-        //           },
-        //           icon: Icons.multitrack_audio_rounded,
-        //           keyboardType: TextInputType.text,
-        //           mycontroller: controller.txtTransporteur,
-        //         ),
-        //       const SizedBox(height: 10),
-        //       const Divider(color: AppColor.black, thickness: 2),
-        //       Row(
-        //         children: [
-        //           if (type != 1 && type != 7 && type != 2)
-        //             if (!controller.loadingDetails)
-        //               Visibility(
-        //                 visible: !controller.loadingDepot,
-        //                 child: Column(
-        //                   mainAxisSize: MainAxisSize.min,
-        //                   children: [
-        //                     InkWell(
-        //                       onTap: () async {
-        //                         ProduitFacture pf = ProduitFacture(
-        //                           totalAchat: 0,
-        //                           totalVente: 0,
-        //                           desMarque: '',
-        //                           desCouleur: '',
-        //                           desFamille: '',
-        //                           oldQte: 0,
-        //                           idUnite: 0,
-        //                           isService: true,
-        //                           desProduit: '',
-        //                           qteStock: 0,
-        //                           desUnite: '',
-        //                           desDepot: '',
-        //                           idDepot: 0,
-        //                           idProduit: 0,
-        //                           ref: '',
-        //                           qte: 0,
-        //                           obs: '',
-        //                           prixVente: 0,
-        //                           prixAchat: 0,
-        //                         );
-        //                         addNewProduct(controller: controller, pf: pf, isService: true);
-        //                       },
-        //                       child: Ink(child: const Icon(Icons.home_repair_service_outlined, color: AppColor.blue2)),
-        //                     ),
-        //                     Text('Services', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColor.blue2)),
-        //                   ],
-        //                 ),
-        //               ),
-        //           Expanded(
-        //             child: Center(
-        //               child: Text(
-        //                 'Liste des Articles (${controller.produits.length} article${controller.produits.length > 1 ? 's' : ''})',
-        //                 style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
-        //               ),
-        //             ),
-        //           ),
-        //           if (!controller.loadingDetails)
-        //             Visibility(
-        //               visible: !controller.loadingDepot,
-        //               child: Column(
-        //                 mainAxisSize: MainAxisSize.min,
-        //                 children: [
-        //                   InkWell(
-        //                     onTap: () async {
-        //                       if (controller.nbDepot > 1 && controller.depotDefault == null) {
-        //                         Get.toNamed(AppRoute.listDonnee, arguments: {'TYPE': 6})?.then((value) {
-        //                           if (value != null) {
-        //                             controller.depotDefault = value;
-        //                             selectProduit(controller);
-        //                           }
-        //                         });
-        //                       } else {
-        //                         selectProduit(controller);
-        //                       }
-        //                     },
-        //                     child: Ink(child: const Icon(Icons.add_shopping_cart_outlined, color: AppColor.green2)),
-        //                   ),
-        //                   Text('Produits', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColor.green2)),
-        //                 ],
-        //               ),
-        //             ),
-        //         ],
-        //       ),
-        //       const SizedBox(height: 15),
-        //       if (controller.produits.isEmpty && !controller.loadingDetails)
-        //         Center(
-        //           child: Text(
-        //             controller.errorDetails ? 'Erreur de chargement' : 'Aucun Produits',
-        //             style: Theme.of(
-        //               context,
-        //             ).textTheme.titleMedium!.copyWith(color: controller.errorDetails ? AppColor.red : AppColor.black),
-        //           ),
-        //         ),
-        //       if (controller.loadingDetails) const Center(child: CircularProgressIndicator.adaptive()),
-        //       if (controller.produits.isNotEmpty) myListOfProducts(controller),
-        //       const SizedBox(height: 10),
-        //       const Divider(color: AppColor.black, thickness: 2),
-        //       if (type == 3 || type == 6) const SizedBox(height: 10),
-        //       if (type == 3)
-        //         EditTextFicheTransport(
-        //           text: 'Prix et Conditions Valables',
-        //           nbline: 1,
-        //           icon: Icons.text_fields_outlined,
-        //           keyboardType: TextInputType.text,
-        //           mycontroller: controller.txtPrixCondition,
-        //         ),
-        //       if (type == 3) const SizedBox(height: 15),
-        //       if (type == 3)
-        //         EditTextFicheTransport(
-        //           text: 'Délai de Livraison',
-        //           nbline: 1,
-        //           icon: Icons.text_fields_outlined,
-        //           keyboardType: TextInputType.text,
-        //           mycontroller: controller.txtDelaiLivraison,
-        //         ),
-        //       if (type == 3) const SizedBox(height: 15),
-        //       if (type == 3)
-        //         EditTextFicheTransport(
-        //           text: 'Garantie',
-        //           nbline: 1,
-        //           icon: Icons.text_fields_outlined,
-        //           keyboardType: TextInputType.text,
-        //           mycontroller: controller.txtGarantie,
-        //         ),
-        //       if (type == 3) const SizedBox(height: 15),
-        //       if (type == 3)
-        //         EditTextFicheTransport(
-        //           text: 'Mode de Paiement',
-        //           nbline: 1,
-        //           icon: Icons.text_fields_outlined,
-        //           keyboardType: TextInputType.text,
-        //           mycontroller: controller.txtModePaiement,
-        //         ),
-        //       if (type == 3) const SizedBox(height: 15),
-        //       if (type == 3)
-        //         EditTextFicheTransport(
-        //           text: 'Objet',
-        //           icon: Icons.text_fields_outlined,
-        //           keyboardType: TextInputType.multiline,
-        //           mycontroller: controller.txtObjet,
-        //         ),
-        //       // myDropDown(
-        //       //     label: 'Organisme',
-        //       //     value: controller.dropOrganisme,
-        //       //     items: controller.myDropList,
-        //       //     onChanged: (value) {
-        //       //       controller.updateDropValue(value);
-        //       //     },
-        //       //     onClear: () {
-        //       //       controller.updateDropValue(null);
-        //       //     },
-        //       //     hint: "Choisir l'Organisme"),
-        //       if (type == 6) const SizedBox(height: 15),
-        //       if (type == 6)
-        //         EditTextFicheTransport(
-        //           text: 'Info Supplémentaire',
-        //           nbline: null,
-        //           icon: Icons.info_outline,
-        //           keyboardType: TextInputType.multiline,
-        //           mycontroller: controller.txtInfoSupp,
-        //         ),
-        //       if (type == 3 || type == 6) const SizedBox(height: 10),
-        //       if (type == 3 || type == 6) const Divider(color: AppColor.black, thickness: 2),
-        //       if (controller.existPrix) myRowOfCheckBox(context, controller),
-        //       const SizedBox(height: 15),
-        //       if (controller.existPrix)
-        //         EditTextFicheTransport(
-        //           text: controller.valCheckTva ? "Montant HT" : "Montant Total",
-        //           nbline: 1,
-        //           isTTC: !controller.valCheckTva,
-        //           readOnly: true,
-        //           icon: Icons.numbers,
-        //           keyboardType: TextInputType.number,
-        //           mycontroller: controller.txtHT,
-        //         ),
-        //       if (controller.valCheckTva && controller.existPrix) const SizedBox(height: 15),
-        //       if (controller.valCheckTva && controller.existPrix)
-        //         Row(
-        //           children: [
-        //             SizedBox(
-        //               width: 120,
-        //               child: EditTextFicheTransport(
-        //                 text: "% Tva",
-        //                 nbline: 1,
-        //                 onChanged: (value) {
-        //                   controller.updateTvapP(value);
-        //                 },
-        //                 icon: Icons.percent,
-        //                 keyboardType: TextInputType.number,
-        //                 mycontroller: controller.txtTvaPourc,
-        //               ),
-        //             ),
-        //             SizedBox(width: AppSizes.widthScreen / 20),
-        //             Expanded(
-        //               child: EditTextFicheTransport(
-        //                 text: "Montant Tva",
-        //                 nbline: 1,
-        //                 readOnly: true,
-        //                 icon: Icons.numbers,
-        //                 keyboardType: TextInputType.number,
-        //                 mycontroller: controller.txtTva,
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       if (controller.valCheckTimbre && controller.existPrix) const SizedBox(height: 15),
-        //       if (controller.valCheckTimbre && controller.existPrix)
-        //         EditTextFicheTransport(
-        //           text: "Montant Timbre (1%)",
-        //           nbline: 1,
-        //           readOnly: true,
-        //           icon: Icons.numbers,
-        //           keyboardType: TextInputType.number,
-        //           mycontroller: controller.txtTimbre,
-        //         ),
-        //       if (controller.valCheckTva && controller.existPrix) const SizedBox(height: 15),
-        //       if (controller.valCheckTva && controller.existPrix)
-        //         EditTextFicheTransport(
-        //           text: "Montant TTC",
-        //           nbline: 1,
-        //           isTTC: true,
-        //           readOnly: true,
-        //           icon: Icons.numbers,
-        //           keyboardType: TextInputType.number,
-        //           mycontroller: controller.txtTTC,
-        //         ),
-        //       const SizedBox(height: 10),
-        //       if (type != 6) const Divider(color: AppColor.black, thickness: 2),
-        //       if (type != 6) const SizedBox(height: 10),
-        //       if (type != 6)
-        //         EditTextFicheTransport(
-        //           text: "Bas de Page",
-        //           nbline: null,
-        //           icon: Icons.note_alt_outlined,
-        //           keyboardType: TextInputType.multiline,
-        //           mycontroller: controller.txtBasPage,
-        //         ),
-        //       const SizedBox(height: 20),
-        //       if (controller.valider)
-        //         const Row(
-        //           mainAxisAlignment: MainAxisAlignment.center,
-        //           children: [CircularProgressIndicator.adaptive(), SizedBox(width: 20), Text("validation en cours ...")],
-        //         ),
-        //       if (!controller.valider && !controller.error && !controller.loadingDetails && !controller.errorDetails)
-        //         Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //           children: [
-        //             MyButtonFiches(
-        //               onPressed: () {
-        //                 AwesomeDialog(
-        //                   context: context,
-        //                   dialogType: DialogType.warning,
-        //                   showCloseIcon: true,
-        //                   btnCancelText: "Non",
-        //                   btnOkText: "Oui",
-        //                   onDismissCallback: (type) {},
-        //                   btnCancelOnPress: () {},
-        //                   width: AppSizes.widthScreen,
-        //                   btnOkOnPress: () {
-        //                     Get.back();
-        //                   },
-        //                   desc: 'Voulez-vous vraiment annuler tous les changements !!!',
-        //                 ).show();
-        //               },
-        //               borderColor: AppColor.red,
-        //               backgroundcolor: AppColor.white,
-        //               text: 'Annuler',
-        //               textColor: AppColor.red,
-        //             ),
-        //             MyButtonFiches(
-        //               onPressed: () {
-        //                 controller.saveFacture();
-        //               },
-        //               borderColor: AppColor.white,
-        //               backgroundcolor: AppColor.green,
-        //               text: 'Valider',
-        //               textColor: AppColor.white,
-        //             ),
-        //           ],
-        //         ),
-        //       const SizedBox(height: 20),
-      ],
+          // const SizedBox(height: 10),
+          //       const SizedBox(height: 15),
+          //       Visibility(
+          //         visible: controller.loadingMagasin,
+          //         replacement: Visibility(
+          //           visible: controller.errorMagasin || controller.nbMagasin > 1,
+          //           child: EditTextFicheTransport(
+          //             text: 'Magasin',
+          //             nbline: 1,
+          //             check: controller.valMagasin,
+          //             focusNode: controller.focusMagasin,
+          //             readOnly: true,
+          //             onTapClear: () {
+          //               controller.updateMagasinValue(pIdMagsin: 0, pNomMagsin: '');
+          //             },
+          //             onTapSearch: () {
+          //               Get.toNamed(AppRoute.listDonnee, arguments: {'TYPE': 7})?.then((value) {
+          //                 if (value != null) {
+          //                   Donnee magasin = value;
+          //                   controller.updateMagasinValue(pIdMagsin: magasin.id, pNomMagsin: magasin.designation);
+          //                 }
+          //               });
+          //             },
+          //             icon: Icons.multitrack_audio_rounded,
+          //             keyboardType: TextInputType.text,
+          //             mycontroller: controller.txtMagasin,
+          //           ),
+          //         ),
+          //         child: const LoadingWidget(),
+          //       ),
+          //       const SizedBox(height: 15),
+          //
+          //
+          //       // if (type == 5)
+          //       //   Center(
+          //       //       child: Container(
+          //       //           constraints: BoxConstraints(maxWidth: AppSizes.widthScreen / 2),
+          //       //           child: myCheckBox(
+          //       //               context: context,
+          //       //               text: 'Sans Facture',
+          //       //               color: AppColor.purple.withValues(alpha: 0.5),
+          //       //               valCheck: controller.valCheckSansFacture,
+          //       //               onTap: (value) {
+          //       //                 controller.updateCheckSansFacture(value);
+          //       //               }))),
+          //       if (type == 5) const SizedBox(height: 10),
+          //       if (type == 5)
+          //         EditTextFicheTransport(
+          //           text: 'Transporteur',
+          //           nbline: 1,
+          //           readOnly: true,
+          //           onTapClear: () {
+          //             controller.updateTransporteurValue(pIdTransporteur: 0, pNomTransporteur: '');
+          //           },
+          //           onTapSearch: () {
+          //             Get.toNamed(AppRoute.listPersonne, arguments: {'SELECT': true, 'TYPE': 3})?.then((value) {
+          //               if (value != null) {
+          //                 controller.updateTransporteurValue(pIdTransporteur: value.id, pNomTransporteur: value.nom);
+          //               }
+          //             });
+          //           },
+          //           icon: Icons.multitrack_audio_rounded,
+          //           keyboardType: TextInputType.text,
+          //           mycontroller: controller.txtTransporteur,
+          //         ),
+          //       const SizedBox(height: 10),
+          //       const Divider(color: AppColor.black, thickness: 2),
+          //       Row(
+          //         children: [
+          //           if (type != 1 && type != 7 && type != 2)
+          //             if (!controller.loadingDetails)
+          //               Visibility(
+          //                 visible: !controller.loadingDepot,
+          //                 child: Column(
+          //                   mainAxisSize: MainAxisSize.min,
+          //                   children: [
+          //                     InkWell(
+          //                       onTap: () async {
+          //                         ProduitFacture pf = ProduitFacture(
+          //                           totalAchat: 0,
+          //                           totalVente: 0,
+          //                           desMarque: '',
+          //                           desCouleur: '',
+          //                           desFamille: '',
+          //                           oldQte: 0,
+          //                           idUnite: 0,
+          //                           isService: true,
+          //                           desProduit: '',
+          //                           qteStock: 0,
+          //                           desUnite: '',
+          //                           desDepot: '',
+          //                           idDepot: 0,
+          //                           idProduit: 0,
+          //                           ref: '',
+          //                           qte: 0,
+          //                           obs: '',
+          //                           prixVente: 0,
+          //                           prixAchat: 0,
+          //                         );
+          //                         addNewProduct(controller: controller, pf: pf, isService: true);
+          //                       },
+          //                       child: Ink(child: const Icon(Icons.home_repair_service_outlined, color: AppColor.blue2)),
+          //                     ),
+          //                     Text('Services', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColor.blue2)),
+          //                   ],
+          //                 ),
+          //               ),
+          //           Expanded(
+          //             child: Center(
+          //               child: Text(
+          //                 'Liste des Articles (${controller.produits.length} article${controller.produits.length > 1 ? 's' : ''})',
+          //                 style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+          //               ),
+          //             ),
+          //           ),
+          //           if (!controller.loadingDetails)
+          //             Visibility(
+          //               visible: !controller.loadingDepot,
+          //               child: Column(
+          //                 mainAxisSize: MainAxisSize.min,
+          //                 children: [
+          //                   InkWell(
+          //                     onTap: () async {
+          //                       if (controller.nbDepot > 1 && controller.depotDefault == null) {
+          //                         Get.toNamed(AppRoute.listDonnee, arguments: {'TYPE': 6})?.then((value) {
+          //                           if (value != null) {
+          //                             controller.depotDefault = value;
+          //                             selectProduit(controller);
+          //                           }
+          //                         });
+          //                       } else {
+          //                         selectProduit(controller);
+          //                       }
+          //                     },
+          //                     child: Ink(child: const Icon(Icons.add_shopping_cart_outlined, color: AppColor.green2)),
+          //                   ),
+          //                   Text('Produits', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColor.green2)),
+          //                 ],
+          //               ),
+          //             ),
+          //         ],
+          //       ),
+          //       const SizedBox(height: 15),
+          //       if (controller.produits.isEmpty && !controller.loadingDetails)
+          //         Center(
+          //           child: Text(
+          //             controller.errorDetails ? 'Erreur de chargement' : 'Aucun Produits',
+          //             style: Theme.of(
+          //               context,
+          //             ).textTheme.titleMedium!.copyWith(color: controller.errorDetails ? AppColor.red : AppColor.black),
+          //           ),
+          //         ),
+          //       if (controller.loadingDetails) const Center(child: CircularProgressIndicator.adaptive()),
+          //       if (controller.produits.isNotEmpty) myListOfProducts(controller),
+          //       const SizedBox(height: 10),
+          //       const Divider(color: AppColor.black, thickness: 2),
+          //       if (type == 3 || type == 6) const SizedBox(height: 10),
+          //       if (type == 3)
+          //         EditTextFicheTransport(
+          //           text: 'Prix et Conditions Valables',
+          //           nbline: 1,
+          //           icon: Icons.text_fields_outlined,
+          //           keyboardType: TextInputType.text,
+          //           mycontroller: controller.txtPrixCondition,
+          //         ),
+          //       if (type == 3) const SizedBox(height: 15),
+          //       if (type == 3)
+          //         EditTextFicheTransport(
+          //           text: 'Délai de Livraison',
+          //           nbline: 1,
+          //           icon: Icons.text_fields_outlined,
+          //           keyboardType: TextInputType.text,
+          //           mycontroller: controller.txtDelaiLivraison,
+          //         ),
+          //       if (type == 3) const SizedBox(height: 15),
+          //       if (type == 3)
+          //         EditTextFicheTransport(
+          //           text: 'Garantie',
+          //           nbline: 1,
+          //           icon: Icons.text_fields_outlined,
+          //           keyboardType: TextInputType.text,
+          //           mycontroller: controller.txtGarantie,
+          //         ),
+          //       if (type == 3) const SizedBox(height: 15),
+          //       if (type == 3)
+          //         EditTextFicheTransport(
+          //           text: 'Mode de Paiement',
+          //           nbline: 1,
+          //           icon: Icons.text_fields_outlined,
+          //           keyboardType: TextInputType.text,
+          //           mycontroller: controller.txtModePaiement,
+          //         ),
+          //       if (type == 3) const SizedBox(height: 15),
+          //       if (type == 3)
+          //         EditTextFicheTransport(
+          //           text: 'Objet',
+          //           icon: Icons.text_fields_outlined,
+          //           keyboardType: TextInputType.multiline,
+          //           mycontroller: controller.txtObjet,
+          //         ),
+          //       // myDropDown(
+          //       //     label: 'Organisme',
+          //       //     value: controller.dropOrganisme,
+          //       //     items: controller.myDropList,
+          //       //     onChanged: (value) {
+          //       //       controller.updateDropValue(value);
+          //       //     },
+          //       //     onClear: () {
+          //       //       controller.updateDropValue(null);
+          //       //     },
+          //       //     hint: "Choisir l'Organisme"),
+          //       if (type == 6) const SizedBox(height: 15),
+          //       if (type == 6)
+          //         EditTextFicheTransport(
+          //           text: 'Info Supplémentaire',
+          //           nbline: null,
+          //           icon: Icons.info_outline,
+          //           keyboardType: TextInputType.multiline,
+          //           mycontroller: controller.txtInfoSupp,
+          //         ),
+          //       if (type == 3 || type == 6) const SizedBox(height: 10),
+          //       if (type == 3 || type == 6) const Divider(color: AppColor.black, thickness: 2),
+          //       if (controller.existPrix) myRowOfCheckBox(context, controller),
+          //       const SizedBox(height: 15),
+          //       if (controller.existPrix)
+          //         EditTextFicheTransport(
+          //           text: controller.valCheckTva ? "Montant HT" : "Montant Total",
+          //           nbline: 1,
+          //           isTTC: !controller.valCheckTva,
+          //           readOnly: true,
+          //           icon: Icons.numbers,
+          //           keyboardType: TextInputType.number,
+          //           mycontroller: controller.txtHT,
+          //         ),
+          //       if (controller.valCheckTva && controller.existPrix) const SizedBox(height: 15),
+          //       if (controller.valCheckTva && controller.existPrix)
+          //         Row(
+          //           children: [
+          //             SizedBox(
+          //               width: 120,
+          //               child: EditTextFicheTransport(
+          //                 text: "% Tva",
+          //                 nbline: 1,
+          //                 onChanged: (value) {
+          //                   controller.updateTvapP(value);
+          //                 },
+          //                 icon: Icons.percent,
+          //                 keyboardType: TextInputType.number,
+          //                 mycontroller: controller.txtTvaPourc,
+          //               ),
+          //             ),
+          //             SizedBox(width: AppSizes.widthScreen / 20),
+          //             Expanded(
+          //               child: EditTextFicheTransport(
+          //                 text: "Montant Tva",
+          //                 nbline: 1,
+          //                 readOnly: true,
+          //                 icon: Icons.numbers,
+          //                 keyboardType: TextInputType.number,
+          //                 mycontroller: controller.txtTva,
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //       if (controller.valCheckTimbre && controller.existPrix) const SizedBox(height: 15),
+          //       if (controller.valCheckTimbre && controller.existPrix)
+          //         EditTextFicheTransport(
+          //           text: "Montant Timbre (1%)",
+          //           nbline: 1,
+          //           readOnly: true,
+          //           icon: Icons.numbers,
+          //           keyboardType: TextInputType.number,
+          //           mycontroller: controller.txtTimbre,
+          //         ),
+          //       if (controller.valCheckTva && controller.existPrix) const SizedBox(height: 15),
+          //       if (controller.valCheckTva && controller.existPrix)
+          //         EditTextFicheTransport(
+          //           text: "Montant TTC",
+          //           nbline: 1,
+          //           isTTC: true,
+          //           readOnly: true,
+          //           icon: Icons.numbers,
+          //           keyboardType: TextInputType.number,
+          //           mycontroller: controller.txtTTC,
+          //         ),
+          //       const SizedBox(height: 10),
+          //       if (type != 6) const Divider(color: AppColor.black, thickness: 2),
+          //       if (type != 6) const SizedBox(height: 10),
+          //       if (type != 6)
+          //         EditTextFicheTransport(
+          //           text: "Bas de Page",
+          //           nbline: null,
+          //           icon: Icons.note_alt_outlined,
+          //           keyboardType: TextInputType.multiline,
+          //           mycontroller: controller.txtBasPage,
+          //         ),
+          //       const SizedBox(height: 20),
+          //       if (controller.valider)
+          //         const Row(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [CircularProgressIndicator.adaptive(), SizedBox(width: 20), Text("validation en cours ...")],
+          //         ),
+          //       if (!controller.valider && !controller.error && !controller.loadingDetails && !controller.errorDetails)
+          //         Row(
+          //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //           children: [
+          //             MyButtonFiches(
+          //               onPressed: () {
+          //                 AwesomeDialog(
+          //                   context: context,
+          //                   dialogType: DialogType.warning,
+          //                   showCloseIcon: true,
+          //                   btnCancelText: "Non",
+          //                   btnOkText: "Oui",
+          //                   onDismissCallback: (type) {},
+          //                   btnCancelOnPress: () {},
+          //                   width: AppSizes.widthScreen,
+          //                   btnOkOnPress: () {
+          //                     Get.back();
+          //                   },
+          //                   desc: 'Voulez-vous vraiment annuler tous les changements !!!',
+          //                 ).show();
+          //               },
+          //               borderColor: AppColor.red,
+          //               backgroundcolor: AppColor.white,
+          //               text: 'Annuler',
+          //               textColor: AppColor.red,
+          //             ),
+          //             MyButtonFiches(
+          //               onPressed: () {
+          //                 controller.saveFacture();
+          //               },
+          //               borderColor: AppColor.white,
+          //               backgroundcolor: AppColor.green,
+          //               text: 'Valider',
+          //               textColor: AppColor.white,
+          //             ),
+          //           ],
+          //         ),
+          //       const SizedBox(height: 20),
+        ],
+      ),
     ),
   );
 

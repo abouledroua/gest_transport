@@ -22,12 +22,11 @@ import '../core/services/httprequest.dart';
 
 class ListTransportsController extends GetxController {
   RxBool loading = false.obs,
+      loadingDepot = false.obs,
       loadingFilter = false.obs,
       loadingDetails = false.obs,
       error = false.obs,
       filter = false.obs,
-      errorExercice = false.obs,
-      errorDestination = false.obs,
       loadingDestination = false.obs,
       loadingExercice = false.obs;
   ScrollController? verticalController;
@@ -35,9 +34,9 @@ class ListTransportsController extends GetxController {
   final FocusNode tableFocusNode = FocusNode();
   bool sort = false, complete = false, sortAscending = true;
   String queryClient = "", queryTransporteurExterne = "";
-  String? dropExercice, sortColumn, dropEtat, dropDestination;
-  List<DropdownMenuItem> myDropEtatList = [], myDropDestinationList = [], myDropExerciceList = [];
-  List<String> exDes = [], destinDes = [], etatTab = [];
+  String? dropExercice, sortColumn, dropEtat, dropDestination, dropDepot;
+  List<DropdownMenuItem> myDropEtatList = [], myDropDestinationList = [], myDropDepotList = [], myDropExerciceList = [];
+  List<String> exDes = [], destinDes = [], depotDes = [], etatTab = [];
   int sortIndex = 0, selectIndex = -1;
   late TextEditingController clientController, dateController, dateAuController, transpExterneController;
   List<Transport> allTransports = [], transports = [];
@@ -116,6 +115,11 @@ class ListTransportsController extends GetxController {
     getList(showMessage: true);
   }
 
+  void updateDropDepotValue(String? value) {
+    dropDepot = value;
+    getList(showMessage: true);
+  }
+
   void updateDropEtatValue(String value) {
     dropEtat = value;
     getList(showMessage: true);
@@ -160,6 +164,15 @@ class ListTransportsController extends GetxController {
     dropDestination = 'Tous Les Destination'.tr;
   }
 
+  void initDropDepot() {
+    myDropDepotList.clear();
+    depotDes.clear();
+    myDropDepotList.add(myDropMenuItem('Tous Les Depots'.tr));
+    depotDes.add('Tous Les Depots'.tr);
+
+    dropDepot = 'Tous Les Depots'.tr;
+  }
+
   void initDate() {
     var now = DateTime.now();
     dateController.text = "${now.year}-${now.month}-${now.day}";
@@ -176,14 +189,15 @@ class ListTransportsController extends GetxController {
         break;
       case 1:
         loadingExercice.value = newloading;
-        errorExercice.value = newerror;
         break;
       case 2:
         loadingDestination.value = newloading;
-        errorDestination.value = newerror;
         break;
       case 3:
         loadingDetails.value = newloading;
+        break;
+      case 4:
+        loadingDepot.value = newloading;
         break;
       default:
     }
@@ -266,6 +280,43 @@ class ListTransportsController extends GetxController {
       } catch (error) {
         updateBooleans(newloading: false, newerror: true, type: 2);
         debugPrint("erreur getDropDestination: $error");
+        AppData.mySnackBar(
+          title: 'Liste des Transports'.tr,
+          message: "Probleme de Connexion avec le serveur !!!",
+          color: AppColor.red,
+        );
+      }
+    }
+  }
+
+  Future getDropDepot({required bool showMessage}) async {
+    if (!loadingDepot.value) {
+      try {
+        updateBooleans(newloading: true, newerror: false, type: 4);
+        final (response, success) = await httpRequest(ftpFile: 'GET_DROP_DEPOT.php');
+
+        if (success) {
+          initDropDepot();
+          var responsebody = jsonDecode(response!.body);
+          for (var m in responsebody) {
+            depotDes.add(m['DESIGNATION']);
+          }
+          myDropDepotList = depotDes.map((e) => myDropMenuItem(e)).toList();
+          if (dropDepot != "Tous Les Depots".tr && !depotDes.contains(dropDepot)) {
+            dropDepot = 'Tous Les Depots'.tr;
+          }
+          updateBooleans(newloading: false, newerror: false, type: 4);
+        } else {
+          updateBooleans(newloading: false, newerror: true, type: 4);
+          AppData.mySnackBar(
+            title: 'Liste des Transports'.tr,
+            message: "Probleme de Connexion avec le serveur !!!",
+            color: AppColor.red,
+          );
+        }
+      } catch (error) {
+        updateBooleans(newloading: false, newerror: true, type: 4);
+        debugPrint("erreur getDropDepot: $error");
         AppData.mySnackBar(
           title: 'Liste des Transports'.tr,
           message: "Probleme de Connexion avec le serveur !!!",
@@ -539,8 +590,10 @@ class ListTransportsController extends GetxController {
     initDropExercice();
     initDropEtat();
     initDropDestination();
+    initDropDepot();
     getDropDestination(showMessage: true);
     getDropExercice(showMessage: true);
+    getDropDepot(showMessage: true);
     getList(showMessage: true);
     super.onInit();
   }

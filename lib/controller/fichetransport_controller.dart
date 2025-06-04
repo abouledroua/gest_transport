@@ -17,6 +17,7 @@ class FicheTransportController extends GetxController {
       errorExercice = false.obs,
       errorDestination = false.obs,
       loadingDestination = false.obs,
+      loadingTransporteur = false.obs,
       loadingExercice = false.obs;
   late int idTransport, exercice, idClient, idTransporteur, idDestination;
   // Donnee? depotDefault;
@@ -187,7 +188,6 @@ class FicheTransportController extends GetxController {
   void updateBooleansDestination({required bool newloading, required bool newerror}) {
     loadingDestination.value = newloading;
     errorDestination.value = newerror;
-    update();
   }
 
   Future getDropDestination({required bool showMessage}) async {
@@ -588,10 +588,10 @@ class FicheTransportController extends GetxController {
   void initDropDestination() {
     myDropDestinationList.clear();
     destinDes.clear();
-    myDropDestinationList.add(myDropMenuItem(''));
-    destinDes.add('');
+    myDropDestinationList.add(myDropMenuItem('Choisir_Destination'.tr));
+    destinDes.add('Choisir_Destination'.tr);
 
-    dropDestination = '';
+    dropDestination = 'Choisir_Destination'.tr;
   }
 
   @override

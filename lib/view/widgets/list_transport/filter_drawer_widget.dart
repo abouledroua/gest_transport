@@ -178,6 +178,29 @@ class FilterDrawerWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSizes.appPadding),
                 Row(
+                  children: [
+                    Text('Depot'.tr, style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      flex: 2,
+                      child: Visibility(
+                        visible: controller.loadingDepot.value,
+                        replacement: myDropDown(
+                          label: 'Depot'.tr,
+                          value: controller.dropDepot,
+                          items: controller.myDropDepotList,
+                          onChanged: (value) {
+                            controller.updateDropDepotValue(value);
+                          },
+                          hint: "Choisir_Depot".tr,
+                        ),
+                        child: const Center(child: CircularProgressIndicator.adaptive()),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSizes.appPadding),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Etat'.tr, style: Theme.of(context).textTheme.titleMedium),
